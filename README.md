@@ -8,11 +8,46 @@
 
 Wechaty Puppet for WechatFerry
 
-## Sponsors
+## Quick Start
+
+Install:
+
+```bash
+pnpm add wechaty wechaty-puppet-ferry
+```
+
+Import:
+
+```js
+import { WechatyBuilder, log } from 'wechaty'
+import { PuppetFerry } from 'wechaty-puppet-ferry'
+
+const puppet = new PuppetFerry()
+const bot = WechatyBuilder.build({ puppet })
+
+bot.on('start', () => log.info('start'))
+bot.on('ready', () => log.info('ready'))
+bot.on('message', (msg) => {
+  const taler = msg.talker()
+  if (msg.type() === bot.Message.Type.Text) {
+    log.info(`${taler.name()}: ${msg.text()}`)
+  }
+})
+
+bot.start()
+```
+
+Callback:
+
+Set [WcfRust](https://github.com/lich0821/wcf-client-rust) callback url to `http://localhost:10011/callback` and click start button
+
+## Funding
+
+<img src="./FUNDING.jpg" width="200" />
 
 ## License
 
-[MIT](./LICENSE) License © 2024-PRESENT [KeJun](https://github.com/mrrhq)
+[MIT](./LICENSE) License © 2024-PRESENT [mrrhq](https://github.com/mrrhqmao)
 
 <!-- Badges -->
 
