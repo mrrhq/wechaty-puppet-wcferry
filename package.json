@@ -1,0 +1,86 @@
+{
+  "name": "wechaty-puppet-ferry",
+  "type": "module",
+  "version": "0.0.0",
+  "packageManager": "pnpm@9.8.0",
+  "description": "Wechaty Puppet for WechatFerry",
+  "author": "keJun <sanhua@himrr.com>",
+  "license": "MIT",
+  "funding": "https://github.com/sponsors/mrrhq",
+  "homepage": "https://github.com/mrrhq/wechaty-puppet-ferry#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrrhq/wechaty-puppet-ferry.git"
+  },
+  "bugs": "https://github.com/mrrhq/wechaty-puppet-ferry/issues",
+  "keywords": [],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/*",
+        "./dist/index.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist",
+    "protobuf"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "dev": "unbuild --stub",
+    "lint": "eslint .",
+    "prepublishOnly": "nr build",
+    "release": "bumpp && npm publish",
+    "start": "esno src/index.ts",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit",
+    "prepare": "simple-git-hooks"
+  },
+  "dependencies": {
+    "file-box": "^1.4.15",
+    "h3": "^1.12.0",
+    "hookable": "^5.5.3",
+    "knex": "^3.1.0",
+    "listhen": "^1.7.2",
+    "ofetch": "^1.3.4",
+    "protobufjs": "^7.4.0",
+    "unstorage": "^1.10.2",
+    "wechaty-puppet": "^1.20.2",
+    "xml2js": "^0.6.2"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^2.27.1",
+    "@antfu/ni": "^0.22.4",
+    "@antfu/utils": "^0.7.10",
+    "@types/node": "^22.5.0",
+    "@types/xml2js": "^0.4.14",
+    "bumpp": "^9.5.2",
+    "eslint": "^9.9.1",
+    "esno": "^4.7.0",
+    "lint-staged": "^15.2.9",
+    "pnpm": "^9.8.0",
+    "simple-git-hooks": "^2.11.1",
+    "typescript": "^5.5.4",
+    "unbuild": "^2.0.0",
+    "vite": "^5.4.2",
+    "vitest": "^2.0.5"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
+  }
+}

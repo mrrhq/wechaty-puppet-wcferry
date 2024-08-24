@@ -1,0 +1,16 @@
+{
+  "name": "playground",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "main": "index.js",
+  "scripts": {
+    "start": "esno index.ts"
+  },
+  "dependencies": {
+    "wechaty": "^1.20.2",
+    "wechaty-puppet-ferry": "workspace:*"
+  }
+}
