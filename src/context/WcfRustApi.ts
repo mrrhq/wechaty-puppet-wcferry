@@ -235,13 +235,12 @@ export class WcfRustApi {
   async chatroomMembers(userName: string) {
     const { db, knex } = useMicroMsgDbQueryBuilder()
     const { memberIdList } = await this.chatroomInfo(userName)
-
     const sql = knex
       .from('Contact')
       .select('NickName', 'UserName')
       .whereIn(
         'UserName',
-        memberIdList.map((v: any) => v.wxID),
+        memberIdList,
       )
       .leftJoin(
         'ContactHeadImgUrl',
@@ -371,11 +370,12 @@ export class WcfRustApi {
   /**
    * 转发消息
    *
+   * @deprecated 数据库查出来的 id 测试过不了
    * @param userName wxid 或 roomId
    * @param messageId 要转发的消息 id
    */
   forwardMessage(userName: string, messageId: string) {
-    return this.post('/forward-msg', { receiver: userName, id: messageId })
+    return this.post('/forward-msg', { receiver: userName, id: Number(messageId) })
   }
 
   // #endregion
