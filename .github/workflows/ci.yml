@@ -25,6 +25,7 @@ jobs:
       - run: pnpm i -g @antfu/ni
       - run: nci
       - run: nr lint
+      - run: nr dev
       - run: nr typecheck
 
   # test:
