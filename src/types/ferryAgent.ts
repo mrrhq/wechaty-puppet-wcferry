@@ -22,7 +22,7 @@ export interface FerryAgentUserOptions {
     /**
      * @default "0.0.0.0"
      */
-    host?: string
+    hostname?: string
   }
 }
 

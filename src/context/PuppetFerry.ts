@@ -1,11 +1,12 @@
 /* eslint-disable unused-imports/no-unused-vars */
-import { nextTick } from 'node:process'
+import process, { nextTick } from 'node:process'
 import * as PUPPET from 'wechaty-puppet'
 import { log } from 'wechaty-puppet'
 import type { Storage, StorageValue } from 'unstorage'
 import { createStorage, prefixStorage } from 'unstorage'
 import type { FileBoxInterface } from 'file-box'
 import { FileBox } from 'file-box'
+import fse from 'fs-extra'
 
 import type {
   Contact,
@@ -640,8 +641,34 @@ export class PuppetFerry extends PUPPET.Puppet {
   override async messageSendFile(conversationId: string, file: FileBoxInterface): Promise<string | void>
   override async messageSendFile(conversationId: string, file: FileBoxInterface): Promise<string | void> {
     log.verbose('PuppetBridge', 'messageSendFile(%s, %s)', conversationId, file)
-    // TODO: 发送文件
-    throw new Error('not support messageSendFile')
+    const dir = await fse.mkdtemp('ferry')
+    const filePath = dir + file.name
+    if (
+      !await fse.exists(filePath)
+    ) {
+      try {
+        await file.toFile(filePath)
+      }
+      catch (err) {
+        log.error('file.toFile(filePath) fail:', err)
+      }
+    }
+
+    if (file.mediaType.startsWith('image')) {
+      await this.agent.api.sendImage(conversationId, filePath)
+    }
+    else {
+      await this.agent.api.sendFile(conversationId, filePath)
+    }
+
+    process.nextTick(async () => {
+      try {
+        await fse.unlink(filePath)
+      }
+      catch (err) {
+        log.error('messageSendFile.unlink fail:', err)
+      }
+    })
   }
 
   override messageSendUrl(conversationId: string, urlLinkPayload: PUPPET.payloads.UrlLink): Promise<string | void>

@@ -1,6 +1,6 @@
 import { EventEmitter } from 'node:events'
 import process from 'node:process'
-import { createApp, readBody, toNodeListener } from 'h3'
+import { createApp, createRouter, defineEventHandler, readBody, toNodeListener } from 'h3'
 import type { Listener } from 'listhen'
 import { listen } from 'listhen'
 import type { FerryAgentHooks, FerryAgentOptions, FerryAgentUserOptions, WcfRustApiRecvMsg } from '../types'
@@ -12,7 +12,7 @@ export function resolveFerryAgentOptions(userOptions: FerryAgentUserOptions): Fe
     server: {
       disabled: false,
       port: 10011,
-      host: '0.0.0.0',
+      hostname: '0.0.0.0',
       ...userOptions.server,
     },
     ...userOptions,
@@ -55,11 +55,21 @@ export class FerryAgent extends EventEmitter<FerryAgentHooks> {
 
   private async createServer({ disabled: _, ...server }: Required<FerryAgentOptions['server']>) {
     const app = createApp()
-    app.use('/wcf', async (events) => {
-      const msg = await readBody<WcfRustApiRecvMsg>(events)
-      this.emit('message', msg)
+    const router = createRouter()
+    app.use(router)
+    const handler = defineEventHandler(async (event) => {
+      try {
+        const msg = await readBody<WcfRustApiRecvMsg>(event)
+        this.emit('message', msg)
+        return { status: 0, message: '成功' }
+      }
+      catch {
+        return { status: 0, message: `http://${server.hostname}:${server.port}/callback` }
+      }
     })
-    this.listener = await listen(toNodeListener(app), { ...server })
+    router.get('/**', handler)
+      .post('/**', handler)
+    this.listener = await listen(toNodeListener(app), { ...server, qr: false, showURL: false })
   }
 
   private catchErrors() {

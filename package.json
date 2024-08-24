@@ -44,12 +44,14 @@
     "prepublishOnly": "nr build",
     "release": "bumpp && npm publish",
     "start": "esno src/index.ts",
+    "play": "npm -C playground start",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
     "prepare": "simple-git-hooks"
   },
   "dependencies": {
     "file-box": "^1.4.15",
+    "fs-extra": "^11.2.0",
     "h3": "^1.12.0",
     "hookable": "^5.5.3",
     "knex": "^3.1.0",
@@ -64,6 +66,7 @@
     "@antfu/eslint-config": "^2.27.1",
     "@antfu/ni": "^0.22.4",
     "@antfu/utils": "^0.7.10",
+    "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.5.0",
     "@types/xml2js": "^0.4.14",
     "bumpp": "^9.5.2",
