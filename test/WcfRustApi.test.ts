@@ -74,7 +74,7 @@ describe('wcfRustApi', () => {
 
   it.skip('should get historyMessageList correctly', async () => {
     const historyMessageList = await api.historyMessageList('filehelper', (sql) => {
-      sql.limit.skip(10)
+      sql.limit(10)
     })
     expect(historyMessageList).toBeDefined()
   })
