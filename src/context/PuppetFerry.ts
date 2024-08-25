@@ -517,7 +517,7 @@ export class PuppetFerry extends PUPPET.Puppet {
       return this.getMessageAttachment(message)
     }
 
-    log.info(`messageFile unknown type: ${message.type}`)
+    log.verbose(`messageFile unknown type: ${message.type}`)
 
     throw new Error('can\'t get file')
   }
@@ -616,24 +616,24 @@ export class PuppetFerry extends PUPPET.Puppet {
     log.verbose('PuppetBridge', 'messageSendText(%s, %s, %s)', conversationId, text, mentionIdList)
 
     if (!conversationId.includes('@chatroom')) {
-      log.info('messageSendText', 'normal text')
+      log.verbose('messageSendText', 'normal text')
       await this.agent.api.sendText(conversationId, text)
       return
     }
 
     if (text.includes('@all')) {
-      log.info('messageSendText', 'at all')
+      log.verbose('messageSendText', 'at all')
       text = text.replace('@all', '@所有人').trim()
       await this.agent.api.sendText(conversationId, text, ['notify@all'])
     }
     else if (/@\[mention:[^\]]+\]/.test(text)) {
-      log.info('messageSendText', 'at mention')
+      log.verbose('messageSendText', 'at mention')
       const { mentions, message } = this.mentionTextParser(text)
       const mentionText = this.getMentionText(conversationId, mentions)
       await this.agent.api.sendText(conversationId, `${mentionText} ${message}`, mentions)
     }
     else {
-      log.info('messageSendText', 'normal text')
+      log.verbose('messageSendText', 'normal text')
       await this.agent.api.sendText(conversationId, text)
     }
   }
