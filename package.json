@@ -13,7 +13,12 @@
     "url": "git+https://github.com/mrrhq/wechaty-puppet-ferry.git"
   },
   "bugs": "https://github.com/mrrhq/wechaty-puppet-ferry/issues",
-  "keywords": [],
+  "keywords": [
+    "wechat",
+    "wechaty",
+    "WechatFerry",
+    "wechaty-puppet"
+  ],
   "sideEffects": false,
   "exports": {
     ".": {
