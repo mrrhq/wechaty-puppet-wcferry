@@ -1,6 +1,6 @@
+import type { RawMessage } from '@wcferry/core'
 import * as PUPPET from 'wechaty-puppet'
 import xml2js, { type ParserOptions } from 'xml2js'
-import type { WcfRustApiRecvMsg } from '../types'
 
 async function xmlToJson(xml: string, options?: ParserOptions): Promise<any> {
   const posIdx = xml.indexOf('<')
@@ -9,7 +9,7 @@ async function xmlToJson(xml: string, options?: ParserOptions): Promise<any> {
   return xml2js.parseStringPromise(xml, options)
 }
 
-async function normalizedMsgType(message: WcfRustApiRecvMsg) {
+async function normalizedMsgType(message: RawMessage) {
   const content = message.content
   let subType = content.match(/<type>(\d+)<\/type>/)?.[1]
     ? String(content.match(/<type>(\d+)<\/type>/)?.[1])
@@ -65,14 +65,14 @@ async function normalizedMsgType(message: WcfRustApiRecvMsg) {
   return { type, subType }
 }
 
-function rewriteMsgContent(message: WcfRustApiRecvMsg) {
+function rewriteMsgContent(message: RawMessage) {
   const splitContent = message.content.split(':\n')
   const content = splitContent.length > 1 ? splitContent[1] : message.content
 
   return content
 }
 
-export async function normalizedMsg(message: WcfRustApiRecvMsg) {
+export async function normalizedMsg(message: RawMessage) {
   let type = PUPPET.types.Message.Unknown
   let content = message.content
   let subType = content.match(/<type>(\d+)<\/type>/)?.[1]

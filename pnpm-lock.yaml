@@ -8,27 +8,15 @@ importers:
 
   .:
     dependencies:
+      '@wcferry/core':
+        specifier: github:kejunmao/node-wcferry#build&path:packages/core
+        version: https://codeload.github.com/kejunmao/node-wcferry/tar.gz/39ee99d8ed385f7de0ada3bb2791d499950c00d1#path:packages/core
       file-box:
         specifier: ^1.4.15
         version: 1.4.15
-      fs-extra:
-        specifier: ^11.2.0
-        version: 11.2.0
-      h3:
-        specifier: ^1.12.0
-        version: 1.12.0
-      hookable:
-        specifier: ^5.5.3
-        version: 5.5.3
       knex:
         specifier: ^3.1.0
         version: 3.1.0
-      listhen:
-        specifier: ^1.7.2
-        version: 1.7.2
-      ofetch:
-        specifier: ^1.3.4
-        version: 1.3.4
       protobufjs:
         specifier: ^7.4.0
         version: 7.4.0
@@ -51,9 +39,6 @@ importers:
       '@antfu/utils':
         specifier: ^0.7.10
         version: 0.7.10
-      '@types/fs-extra':
-        specifier: ^11.0.4
-        version: 11.0.4
       '@types/node':
         specifier: ^22.5.0
         version: 22.5.0
@@ -95,8 +80,8 @@ importers:
     dependencies:
       wechaty:
         specifier: ^1.20.2
-        version: 1.20.2(@swc/core@1.7.18)(brolog@1.14.2)(redux@4.2.1)(rxjs@7.8.1)
-      wechaty-puppet-ferry:
+        version: 1.20.2(@swc/core@1.7.18(@swc/helpers@0.5.12))(brolog@1.14.2)(redux@4.2.1)(rxjs@7.8.1)
+      wechaty-puppet-wcferry:
         specifier: workspace:*
         version: link:..
 
@@ -220,8 +205,16 @@ packages:
     resolution: {integrity: sha512-2ofRCjnnA9y+wk8b9IAREroeUP02KHp431N2mhKniy2yKIDKpbrHv9eXwm8cBeWQYcJmzv5qKCu65P47eCF7CQ==}
     engines: {node: '>=6.9.0'}
 
+  '@babel/helper-string-parser@7.24.8':
+    resolution: {integrity: sha512-pO9KhhRcuUyGnJWwyEgnRJTSIZHiT+vMD0kPeD+so0l7mxkMT19g3pjY9GTnHySck/hDzq+dtW/4VgnMkippsQ==}
+    engines: {node: '>=6.9.0'}
+
   '@babel/helper-validator-identifier@7.24.5':
     resolution: {integrity: sha512-3q93SSKX2TWCG30M2G2kwaKeTYgEUp5Snjuj8qm729SObL6nbtUldAi37qbxkD5gg3xnBio+f9nqpSepGZMvxA==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/helper-validator-identifier@7.24.7':
+    resolution: {integrity: sha512-rR+PBcQ1SMQDDyF6X0wxtG8QyLCgUB0eRAGguqRLfkCA87l7yAP7ehq8SNj96OOGTO8OBV70KhuFYcIkHXOg0w==}
     engines: {node: '>=6.9.0'}
 
   '@babel/helper-validator-option@7.23.5':
@@ -238,6 +231,11 @@ packages:
 
   '@babel/parser@7.24.5':
     resolution: {integrity: sha512-EOv5IK8arwh3LI47dz1b0tKUb/1uhHAnHJOrjgtQMIpu1uXd9mlFrJg9IUgGUgZ41Ch0K8REPTYpO7B76b4vJg==}
+    engines: {node: '>=6.0.0'}
+    hasBin: true
+
+  '@babel/parser@7.25.4':
+    resolution: {integrity: sha512-nq+eWrOgdtu3jG5Os4TQP3x3cLA8hR8TvJNjD8vnPa20WGycimcparWnLK4jJhElTK6SDyuJo1weMKO/5LpmLA==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -259,6 +257,10 @@ packages:
 
   '@babel/types@7.24.5':
     resolution: {integrity: sha512-6mQNsaLeXTw0nxYUYu+NSa4Hx4BlF1x1x8/PMFbiR+GBSr+2DkECc69b8hgy2frEodNcvPffeH8YfWd3LI6jhQ==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/types@7.25.4':
+    resolution: {integrity: sha512-zQ1ijeeCXVEh+aNL0RlmkPkG8HUiDcU2pzQQFjtbntgAczRASFzj4H+6+bV+dy1ntKR14I/DypeuRG1uma98iQ==}
     engines: {node: '>=6.9.0'}
 
   '@clack/core@0.3.4':
@@ -920,6 +922,9 @@ packages:
   '@jridgewell/sourcemap-codec@1.4.15':
     resolution: {integrity: sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==}
 
+  '@jridgewell/sourcemap-codec@1.5.0':
+    resolution: {integrity: sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ==}
+
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
@@ -1210,6 +1215,40 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@rustup/nng-darwin-arm64@0.1.2':
+    resolution: {integrity: sha512-l12FqjYgdgLsdUj9ckBJCEIJyfB57bSk1Y8fhLQvy9ThYm2Ptn8Rg7bEB6lxpLPFiYwjMZ9qJewaaTzHmF+eqQ==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@rustup/nng-darwin-universal@0.1.2':
+    resolution: {integrity: sha512-hWPGZymav3ST8aLX62+VNGEtWxBRrQDVrwjVaqBWd4CmlqztRpsBId2P73ZsQ+ncQQGf1n0SNuJqSHKVMDuccQ==}
+    engines: {node: '>= 10'}
+    os: [darwin]
+
+  '@rustup/nng-darwin-x64@0.1.2':
+    resolution: {integrity: sha512-RvchyP+Ux6OS9NNM38QRaGbcYTH3n9jLwq5w43nR8Uc6uk4eG/5iDA3XRPyhP2DMt18J2Q1ioW/QNglyiUiyXQ==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@rustup/nng-linux-x64-gnu@0.1.2':
+    resolution: {integrity: sha512-HMMYOqhMKj9/Sc0x7E7MRLBvXCq3mAQtj//a1qoqtUaoHXZcUb3WI+D2CS5wBc4a8tPjUZ/m1A9nREiMlQw/zQ==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
+  '@rustup/nng-win32-x64-msvc@0.1.2':
+    resolution: {integrity: sha512-w8AwLM1IOaCX5vgPwkApHJPWSc5rGVFd+gLqRPyYr2S4dkZ9OshgMnuS3jvBH4QtXXv7GBQIFzvTe15d0xgWeA==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [win32]
+
+  '@rustup/nng@0.1.2':
+    resolution: {integrity: sha512-cEt3r3r2JJic0G6QIM8qP9UbdYlhAiB36ZIArMzWvdH7wjDqFyi+d+JUas1FMa8eYUtHXZq0J9SbxtCvgGj/kQ==}
+    engines: {node: '>= 10'}
+
   '@sindresorhus/merge-streams@2.3.0':
     resolution: {integrity: sha512-LtoMMhxAlorcGhmFYI+LhPgbPZCkgP6ra1YL604EeF6U98pLlQ3iWIGMdWSC+vWmPBWBNgmDBAhnAobLROJmwg==}
     engines: {node: '>=18'}
@@ -1319,6 +1358,9 @@ packages:
   '@swc/counter@0.1.3':
     resolution: {integrity: sha512-e2BR4lsJkkRlKZ/qCHPw9ZaSxc0MVUd7gtbtaB7aMvHeJVYe8sOB8DBZkP2DtISHGSku9sCK6T6cnY0CtXrOCQ==}
 
+  '@swc/helpers@0.5.12':
+    resolution: {integrity: sha512-KMZNXiGibsW9kvZAO1Pam2JPTDBm+KSHMMHWdsyI/1DbIZjT2A6Gy3hblVXUMEDvUAKq+e0vL0X0o54owWji7g==}
+
   '@swc/types@0.1.12':
     resolution: {integrity: sha512-wBJA+SdtkbFhHjTMYH+dEH1y4VpfGdAc2Kw/LK09i9bXd/K6j6PkDcFCEzb6iVfZMkPRrl/q0e3toqTAJdkIVA==}
 
@@ -1338,14 +1380,8 @@ packages:
   '@types/estree@1.0.5':
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
 
-  '@types/fs-extra@11.0.4':
-    resolution: {integrity: sha512-yTbItCNreRooED33qjunPthRcSjERP1r4MqCZc7wv0u2sUkzTFp45tgUfS5+r7FrZPdmCCNflLhVSP/o+SemsQ==}
-
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
-
-  '@types/jsonfile@6.1.4':
-    resolution: {integrity: sha512-D5qGUYwjvnNNextdU59/+fI+spnwtTFmyQP0h+PfIOSkNfpU6AOICUOkm4i0OnSk+NyjdPJrxCDro0sJsWlRpQ==}
 
   '@types/mdast@3.0.15':
     resolution: {integrity: sha512-LnwD+mUEfxWMa1QpDraczIn6k0Ee3SMicuYSSzS6ZYl2gKS09EClnJYGd8Du6rfc5r/GZEk5o1mRb8TaTj03sQ==}
@@ -1505,6 +1541,10 @@ packages:
 
   '@vue/shared@3.3.10':
     resolution: {integrity: sha512-2y3Y2J1a3RhFa0WisHvACJR2ncvWiVHcP8t0Inxo+NKz+8RKO4ZV8eZgCxRgQoA6ITfV12L4E6POOL9HOU5nqw==}
+
+  '@wcferry/core@https://codeload.github.com/kejunmao/node-wcferry/tar.gz/39ee99d8ed385f7de0ada3bb2791d499950c00d1#path:packages/core':
+    resolution: {path: packages/core, tarball: https://codeload.github.com/kejunmao/node-wcferry/tar.gz/39ee99d8ed385f7de0ada3bb2791d499950c00d1}
+    version: 0.1.6
 
   abstract-leveldown@7.2.0:
     resolution: {integrity: sha512-DnhQwcFEaYsvYDnACLZhMmCWd3rkOeEvglpa4q5i/5Jlm3UIsWaxVzuXvDLFCSCWRO3yy2/+V/G7FusFgejnfQ==}
@@ -1954,15 +1994,6 @@ packages:
 
   debug@4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
-    engines: {node: '>=6.0'}
-    peerDependencies:
-      supports-color: '*'
-    peerDependenciesMeta:
-      supports-color:
-        optional: true
-
-  debug@4.3.5:
-    resolution: {integrity: sha512-pt0bNEmneDIvdL1Xsd9oDQ/wrQRkXDT4AUWlNZNPKvW5x/jyO9VFXkJUP07vQ2upmw5PlaITaPKc31jK13V+jg==}
     engines: {node: '>=6.0'}
     peerDependencies:
       supports-color: '*'
@@ -3036,6 +3067,9 @@ packages:
   magic-string@0.30.10:
     resolution: {integrity: sha512-iIRwTIf0QKV3UAnYK4PU8uiEc4SRh5jX0mwpIwETPpHdhVM4f53RSwS/vXvN1JhGX+Cs7B8qIq3d6AH49O5fAQ==}
 
+  magic-string@0.30.11:
+    resolution: {integrity: sha512-+Wri9p0QHMy+545hKww7YAu5NyzF8iomPL/RQazugQ9+Ez4Ic3mERMd8ZTX5rfK944j+560ZJi8iAwgak1Ac7A==}
+
   make-error@1.3.6:
     resolution: {integrity: sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==}
 
@@ -4077,8 +4111,8 @@ packages:
   tslib@2.1.0:
     resolution: {integrity: sha512-hcVC3wYEziELGGmEEXue7D75zbwIIVUMWAVbHItGPx0ziyXxrOMQx4rQEVEV45Ut/1IotuEvwqPopzIOkDMf0A==}
 
-  tslib@2.6.2:
-    resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+  tslib@2.7.0:
+    resolution: {integrity: sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==}
 
   tsx@4.10.5:
     resolution: {integrity: sha512-twDSbf7Gtea4I2copqovUiNTEDrT8XNFXsuHpfGbdpW/z9ZW4fTghzzhAG0WfrCuJmJiOEY1nLIjq4u3oujRWQ==}
@@ -4565,7 +4599,7 @@ snapshots:
       '@babel/traverse': 7.24.5
       '@babel/types': 7.24.5
       convert-source-map: 2.0.0
-      debug: 4.3.5
+      debug: 4.3.6
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -4621,7 +4655,11 @@ snapshots:
 
   '@babel/helper-string-parser@7.24.1': {}
 
+  '@babel/helper-string-parser@7.24.8': {}
+
   '@babel/helper-validator-identifier@7.24.5': {}
+
+  '@babel/helper-validator-identifier@7.24.7': {}
 
   '@babel/helper-validator-option@7.23.5': {}
 
@@ -4643,6 +4681,10 @@ snapshots:
   '@babel/parser@7.24.5':
     dependencies:
       '@babel/types': 7.24.5
+
+  '@babel/parser@7.25.4':
+    dependencies:
+      '@babel/types': 7.25.4
 
   '@babel/runtime@7.25.4':
     dependencies:
@@ -4675,6 +4717,12 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.24.1
       '@babel/helper-validator-identifier': 7.24.5
+      to-fast-properties: 2.0.0
+
+  '@babel/types@7.25.4':
+    dependencies:
+      '@babel/helper-string-parser': 7.24.8
+      '@babel/helper-validator-identifier': 7.24.7
       to-fast-properties: 2.0.0
 
   '@clack/core@0.3.4':
@@ -4926,7 +4974,7 @@ snapshots:
   '@eslint/config-array@0.18.0':
     dependencies:
       '@eslint/object-schema': 2.1.4
-      debug: 4.3.5
+      debug: 4.3.6
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -4934,7 +4982,7 @@ snapshots:
   '@eslint/eslintrc@3.1.0':
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.5
+      debug: 4.3.6
       espree: 10.1.0
       globals: 14.0.0
       ignore: 5.3.1
@@ -5226,6 +5274,8 @@ snapshots:
 
   '@jridgewell/sourcemap-codec@1.4.15': {}
 
+  '@jridgewell/sourcemap-codec@1.5.0': {}
+
   '@jridgewell/trace-mapping@0.3.25':
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
@@ -5437,6 +5487,31 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.21.0':
     optional: true
 
+  '@rustup/nng-darwin-arm64@0.1.2':
+    optional: true
+
+  '@rustup/nng-darwin-universal@0.1.2':
+    optional: true
+
+  '@rustup/nng-darwin-x64@0.1.2':
+    optional: true
+
+  '@rustup/nng-linux-x64-gnu@0.1.2':
+    optional: true
+
+  '@rustup/nng-win32-x64-msvc@0.1.2':
+    optional: true
+
+  '@rustup/nng@0.1.2':
+    dependencies:
+      typescript: 5.5.4
+    optionalDependencies:
+      '@rustup/nng-darwin-arm64': 0.1.2
+      '@rustup/nng-darwin-universal': 0.1.2
+      '@rustup/nng-darwin-x64': 0.1.2
+      '@rustup/nng-linux-x64-gnu': 0.1.2
+      '@rustup/nng-win32-x64-msvc': 0.1.2
+
   '@sindresorhus/merge-streams@2.3.0': {}
 
   '@stylistic/eslint-plugin-js@2.6.4(eslint@9.9.1(jiti@1.21.6))':
@@ -5514,7 +5589,7 @@ snapshots:
   '@swc/core-win32-x64-msvc@1.7.18':
     optional: true
 
-  '@swc/core@1.7.18':
+  '@swc/core@1.7.18(@swc/helpers@0.5.12)':
     dependencies:
       '@swc/counter': 0.1.3
       '@swc/types': 0.1.12
@@ -5529,8 +5604,13 @@ snapshots:
       '@swc/core-win32-arm64-msvc': 1.7.18
       '@swc/core-win32-ia32-msvc': 1.7.18
       '@swc/core-win32-x64-msvc': 1.7.18
+      '@swc/helpers': 0.5.12
 
   '@swc/counter@0.1.3': {}
+
+  '@swc/helpers@0.5.12':
+    dependencies:
+      tslib: 2.7.0
 
   '@swc/types@0.1.12':
     dependencies:
@@ -5552,16 +5632,7 @@ snapshots:
 
   '@types/estree@1.0.5': {}
 
-  '@types/fs-extra@11.0.4':
-    dependencies:
-      '@types/jsonfile': 6.1.4
-      '@types/node': 22.5.0
-
   '@types/json-schema@7.0.15': {}
-
-  '@types/jsonfile@6.1.4':
-    dependencies:
-      '@types/node': 22.5.0
 
   '@types/mdast@3.0.15':
     dependencies:
@@ -5609,7 +5680,7 @@ snapshots:
       '@typescript-eslint/types': 8.2.0
       '@typescript-eslint/typescript-estree': 8.2.0(typescript@5.5.4)
       '@typescript-eslint/visitor-keys': 8.2.0
-      debug: 4.3.5
+      debug: 4.3.6
       eslint: 9.9.1(jiti@1.21.6)
     optionalDependencies:
       typescript: 5.5.4
@@ -5630,7 +5701,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/typescript-estree': 8.2.0(typescript@5.5.4)
       '@typescript-eslint/utils': 8.2.0(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)
-      debug: 4.3.5
+      debug: 4.3.6
       ts-api-utils: 1.3.0(typescript@5.5.4)
     optionalDependencies:
       typescript: 5.5.4
@@ -5649,8 +5720,8 @@ snapshots:
       debug: 4.3.6
       globby: 11.1.0
       is-glob: 4.0.3
-      minimatch: 9.0.4
-      semver: 7.6.2
+      minimatch: 9.0.5
+      semver: 7.6.3
       ts-api-utils: 1.3.0(typescript@5.5.4)
     optionalDependencies:
       typescript: 5.5.4
@@ -5661,11 +5732,11 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.2.0
       '@typescript-eslint/visitor-keys': 8.2.0
-      debug: 4.3.5
+      debug: 4.3.6
       globby: 11.1.0
       is-glob: 4.0.3
-      minimatch: 9.0.4
-      semver: 7.6.2
+      minimatch: 9.0.5
+      semver: 7.6.3
       ts-api-utils: 1.3.0(typescript@5.5.4)
     optionalDependencies:
       typescript: 5.5.4
@@ -5747,7 +5818,7 @@ snapshots:
 
   '@vue/compiler-core@3.3.10':
     dependencies:
-      '@babel/parser': 7.24.5
+      '@babel/parser': 7.25.4
       '@vue/shared': 3.3.10
       estree-walker: 2.0.2
       source-map-js: 1.2.0
@@ -5759,14 +5830,14 @@ snapshots:
 
   '@vue/compiler-sfc@3.3.10':
     dependencies:
-      '@babel/parser': 7.24.5
+      '@babel/parser': 7.25.4
       '@vue/compiler-core': 3.3.10
       '@vue/compiler-dom': 3.3.10
       '@vue/compiler-ssr': 3.3.10
       '@vue/reactivity-transform': 3.3.10
       '@vue/shared': 3.3.10
       estree-walker: 2.0.2
-      magic-string: 0.30.10
+      magic-string: 0.30.11
       postcss: 8.4.41
       source-map-js: 1.2.0
 
@@ -5777,13 +5848,23 @@ snapshots:
 
   '@vue/reactivity-transform@3.3.10':
     dependencies:
-      '@babel/parser': 7.24.5
+      '@babel/parser': 7.25.4
       '@vue/compiler-core': 3.3.10
       '@vue/shared': 3.3.10
       estree-walker: 2.0.2
-      magic-string: 0.30.10
+      magic-string: 0.30.11
 
   '@vue/shared@3.3.10': {}
+
+  '@wcferry/core@https://codeload.github.com/kejunmao/node-wcferry/tar.gz/39ee99d8ed385f7de0ada3bb2791d499950c00d1#path:packages/core':
+    dependencies:
+      '@rustup/nng': 0.1.2
+      '@swc/helpers': 0.5.12
+      debug: 4.3.6
+      google-protobuf: 3.21.4
+      mime: 3.0.0
+    transitivePeerDependencies:
+      - supports-color
 
   abstract-leveldown@7.2.0:
     dependencies:
@@ -6269,10 +6350,6 @@ snapshots:
     dependencies:
       ms: 2.1.2
 
-  debug@4.3.5:
-    dependencies:
-      ms: 2.1.2
-
   debug@4.3.6:
     dependencies:
       ms: 2.1.2
@@ -6482,7 +6559,7 @@ snapshots:
   eslint-compat-utils@0.5.0(eslint@9.9.1(jiti@1.21.6)):
     dependencies:
       eslint: 9.9.1(jiti@1.21.6)
-      semver: 7.6.2
+      semver: 7.6.3
 
   eslint-config-flat-gitignore@0.1.8:
     dependencies:
@@ -6526,7 +6603,7 @@ snapshots:
   eslint-plugin-import-x@3.1.0(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4):
     dependencies:
       '@typescript-eslint/utils': 7.9.0(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)
-      debug: 4.3.5
+      debug: 4.3.6
       doctrine: 3.0.0
       eslint: 9.9.1(jiti@1.21.6)
       eslint-import-resolver-node: 0.3.9
@@ -6535,7 +6612,7 @@ snapshots:
       minimatch: 9.0.4
       semver: 7.6.2
       stable-hash: 0.0.4
-      tslib: 2.6.2
+      tslib: 2.7.0
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -6615,7 +6692,7 @@ snapshots:
 
   eslint-plugin-toml@0.11.1(eslint@9.9.1(jiti@1.21.6)):
     dependencies:
-      debug: 4.3.5
+      debug: 4.3.6
       eslint: 9.9.1(jiti@1.21.6)
       eslint-compat-utils: 0.5.0(eslint@9.9.1(jiti@1.21.6))
       lodash: 4.17.21
@@ -6665,7 +6742,7 @@ snapshots:
 
   eslint-plugin-yml@1.14.0(eslint@9.9.1(jiti@1.21.6)):
     dependencies:
-      debug: 4.3.5
+      debug: 4.3.6
       eslint: 9.9.1(jiti@1.21.6)
       eslint-compat-utils: 0.5.0(eslint@9.9.1(jiti@1.21.6))
       lodash: 4.17.21
@@ -6706,7 +6783,7 @@ snapshots:
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.3
-      debug: 4.3.5
+      debug: 4.3.6
       escape-string-regexp: 4.0.0
       eslint-scope: 8.0.2
       eslint-visitor-keys: 4.0.0
@@ -7200,7 +7277,7 @@ snapshots:
   ix@4.6.1:
     dependencies:
       '@types/node': 13.13.52
-      tslib: 2.6.2
+      tslib: 2.7.0
 
   jimp@0.16.13:
     dependencies:
@@ -7501,6 +7578,10 @@ snapshots:
   magic-string@0.30.10:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.15
+
+  magic-string@0.30.11:
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.5.0
 
   make-error@1.3.6: {}
 
@@ -8251,7 +8332,7 @@ snapshots:
 
   rxjs@7.8.1:
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.7.0
 
   safe-buffer@5.1.2: {}
 
@@ -8437,12 +8518,12 @@ snapshots:
 
   synckit@0.6.2:
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.7.0
 
   synckit@0.9.1:
     dependencies:
       '@pkgr/core': 0.1.1
-      tslib: 2.6.2
+      tslib: 2.7.0
 
   system-architecture@0.1.0: {}
 
@@ -8503,7 +8584,7 @@ snapshots:
 
   tslib@2.1.0: {}
 
-  tslib@2.6.2: {}
+  tslib@2.7.0: {}
 
   tsx@4.10.5:
     dependencies:
@@ -8664,7 +8745,7 @@ snapshots:
   vite-node@2.0.5(@types/node@22.5.0):
     dependencies:
       cac: 6.7.14
-      debug: 4.3.5
+      debug: 4.3.6
       pathe: 1.1.2
       tinyrainbow: 1.2.0
       vite: 5.4.2(@types/node@22.5.0)
@@ -8698,7 +8779,7 @@ snapshots:
       '@vitest/spy': 2.0.5
       '@vitest/utils': 2.0.5
       chai: 5.1.1
-      debug: 4.3.5
+      debug: 4.3.6
       execa: 8.0.1
       magic-string: 0.30.10
       pathe: 1.1.2
@@ -8723,7 +8804,7 @@ snapshots:
 
   vue-eslint-parser@9.4.3(eslint@9.9.1(jiti@1.21.6)):
     dependencies:
-      debug: 4.3.5
+      debug: 4.3.6
       eslint: 9.9.1(jiti@1.21.6)
       eslint-scope: 7.2.2
       eslint-visitor-keys: 3.4.3
@@ -8755,7 +8836,7 @@ snapshots:
       google-protobuf: 3.21.4
       stronger-typed-streams: 0.2.0
 
-  wechaty-puppet-service@1.19.9(brolog@1.14.2)(redux@4.2.1)(wechaty-puppet@1.20.2(rxjs@7.8.1))(wechaty@1.20.2(@swc/core@1.7.18)(brolog@1.14.2)(redux@4.2.1)(rxjs@7.8.1)):
+  wechaty-puppet-service@1.19.9(brolog@1.14.2)(redux@4.2.1)(wechaty-puppet@1.20.2(rxjs@7.8.1))(wechaty@1.20.2(@swc/core@1.7.18(@swc/helpers@0.5.12))(brolog@1.14.2)(redux@4.2.1)(rxjs@7.8.1)):
     dependencies:
       clone-class: 1.1.3
       ducks: 1.0.2(redux-observable@2.0.0(redux@4.2.1))(redux@4.2.1)
@@ -8769,7 +8850,7 @@ snapshots:
       uuid: 8.3.2
       wechaty-grpc: 1.5.2
       wechaty-puppet: 1.20.2(rxjs@7.8.1)
-      wechaty-redux: 1.20.2(brolog@1.14.2)(wechaty-puppet@1.20.2(rxjs@7.8.1))(wechaty@1.20.2(@swc/core@1.7.18)(brolog@1.14.2)(redux@4.2.1)(rxjs@7.8.1))
+      wechaty-redux: 1.20.2(brolog@1.14.2)(wechaty-puppet@1.20.2(rxjs@7.8.1))(wechaty@1.20.2(@swc/core@1.7.18(@swc/helpers@0.5.12))(brolog@1.14.2)(redux@4.2.1)(rxjs@7.8.1))
       wechaty-token: 1.1.2
     transitivePeerDependencies:
       - brolog
@@ -8778,10 +8859,10 @@ snapshots:
       - supports-color
       - wechaty
 
-  wechaty-puppet-wechat4u@1.14.14(@swc/core@1.7.18)(wechaty-puppet@1.20.2(rxjs@7.8.1)):
+  wechaty-puppet-wechat4u@1.14.14(@swc/core@1.7.18(@swc/helpers@0.5.12))(wechaty-puppet@1.20.2(rxjs@7.8.1)):
     dependencies:
       '@alloc/quick-lru': 5.2.0
-      '@swc/core': 1.7.18
+      '@swc/core': 1.7.18(@swc/helpers@0.5.12)
       fast-xml-parser: 3.21.1
       promise-retry: 2.0.1
       wechat4u: 0.7.14
@@ -8808,7 +8889,7 @@ snapshots:
       - debug
       - rxjs
 
-  wechaty-redux@1.20.2(brolog@1.14.2)(wechaty-puppet@1.20.2(rxjs@7.8.1))(wechaty@1.20.2(@swc/core@1.7.18)(brolog@1.14.2)(redux@4.2.1)(rxjs@7.8.1)):
+  wechaty-redux@1.20.2(brolog@1.14.2)(wechaty-puppet@1.20.2(rxjs@7.8.1))(wechaty@1.20.2(@swc/core@1.7.18(@swc/helpers@0.5.12))(brolog@1.14.2)(redux@4.2.1)(rxjs@7.8.1)):
     dependencies:
       ducks: 1.0.2(redux-observable@2.0.0(redux@4.2.1))(redux@4.2.1)
       gerror: 1.0.16
@@ -8820,7 +8901,7 @@ snapshots:
       typesafe-actions: 5.1.0
       utility-types: 3.11.0
       uuid: 8.3.2
-      wechaty: 1.20.2(@swc/core@1.7.18)(brolog@1.14.2)(redux@4.2.1)(rxjs@7.8.1)
+      wechaty: 1.20.2(@swc/core@1.7.18(@swc/helpers@0.5.12))(brolog@1.14.2)(redux@4.2.1)(rxjs@7.8.1)
       wechaty-puppet: 1.20.2(rxjs@7.8.1)
     transitivePeerDependencies:
       - brolog
@@ -8834,7 +8915,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  wechaty@1.20.2(@swc/core@1.7.18)(brolog@1.14.2)(redux@4.2.1)(rxjs@7.8.1):
+  wechaty@1.20.2(@swc/core@1.7.18(@swc/helpers@0.5.12))(brolog@1.14.2)(redux@4.2.1)(rxjs@7.8.1):
     dependencies:
       clone-class: 1.1.3
       cmd-ts: 0.10.2
@@ -8852,8 +8933,8 @@ snapshots:
       state-switch: 1.7.1(brolog@1.14.2)(gerror@1.0.16)(rxjs@7.8.1)
       uuid: 8.3.2
       wechaty-puppet: 1.20.2(rxjs@7.8.1)
-      wechaty-puppet-service: 1.19.9(brolog@1.14.2)(redux@4.2.1)(wechaty-puppet@1.20.2(rxjs@7.8.1))(wechaty@1.20.2(@swc/core@1.7.18)(brolog@1.14.2)(redux@4.2.1)(rxjs@7.8.1))
-      wechaty-puppet-wechat4u: 1.14.14(@swc/core@1.7.18)(wechaty-puppet@1.20.2(rxjs@7.8.1))
+      wechaty-puppet-service: 1.19.9(brolog@1.14.2)(redux@4.2.1)(wechaty-puppet@1.20.2(rxjs@7.8.1))(wechaty@1.20.2(@swc/core@1.7.18(@swc/helpers@0.5.12))(brolog@1.14.2)(redux@4.2.1)(rxjs@7.8.1))
+      wechaty-puppet-wechat4u: 1.14.14(@swc/core@1.7.18(@swc/helpers@0.5.12))(wechaty-puppet@1.20.2(rxjs@7.8.1))
       wechaty-token: 1.1.2
       ws: 8.18.0
     transitivePeerDependencies:

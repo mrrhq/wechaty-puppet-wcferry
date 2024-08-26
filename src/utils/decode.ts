@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
-import { Buffer } from 'node:buffer'
+import type { Buffer } from 'node:buffer'
 import protobuf from 'protobufjs'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -10,24 +10,24 @@ const protobufDir = join(__dirname, __filename.endsWith('decode.ts') ? '../../' 
 let BytesExtraRoot: protobuf.Root
 let RoomDataRoot: protobuf.Root
 
-export function decodeRoomData(input: string) {
+export function decodeRoomData(input: Buffer) {
   if (!RoomDataRoot) {
     RoomDataRoot = protobuf.loadSync(
       join(protobufDir, 'RoomData.proto'),
     )
   }
   const RoomData = RoomDataRoot.lookupType('RoomData')
-  return RoomData.decode(Buffer.from(input, 'base64')).toJSON()
+  return RoomData.decode(input).toJSON()
 }
 
-export function decodeBytesExtra(input: string) {
+export function decodeBytesExtra(input: Buffer) {
   if (!BytesExtraRoot) {
     BytesExtraRoot = protobuf.loadSync(
       join(protobufDir, 'BytesExtra.proto'),
     )
   }
   const BytesExtra = BytesExtraRoot.lookupType('BytesExtra')
-  return BytesExtra.decode(Buffer.from(input, 'base64')).toJSON()
+  return BytesExtra.decode(input).toJSON()
 }
 
 export function getWxidFromBytesExtra(bytesExtra: any): null | string {

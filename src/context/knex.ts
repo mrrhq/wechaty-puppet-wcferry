@@ -1,3 +1,4 @@
+import type { Buffer } from 'node:buffer'
 import knex from 'knex'
 
 // #region MicroMsg.db
@@ -23,7 +24,7 @@ export interface ChatRoomInfo {
 
 export interface ChatRoom {
   ChatRoomName: string
-  RoomData: string
+  RoomData: Buffer
 }
 
 export interface ContactHeadImgUrl {
@@ -51,7 +52,7 @@ export interface MSG {
   MsgSequence: number
   StrTalker: string
   StrContent: string
-  BytesExtra: string
+  BytesExtra: Buffer
 }
 
 export interface Name2ID {

@@ -1,5 +1,4 @@
 syntax = "proto3";
-package app.protobuf;
 
 message SubMessage1 {
   int32 field1 = 1;

@@ -1,12 +1,11 @@
 /* eslint-disable unused-imports/no-unused-vars */
-import process, { nextTick } from 'node:process'
+import { nextTick } from 'node:process'
 import * as PUPPET from 'wechaty-puppet'
 import { log } from 'wechaty-puppet'
 import type { Storage, StorageValue } from 'unstorage'
 import { createStorage, prefixStorage } from 'unstorage'
 import type { FileBoxInterface } from 'file-box'
 import { FileBox } from 'file-box'
-import fse from 'fs-extra'
 
 import type {
   Contact,
@@ -16,14 +15,15 @@ import type {
   RoomMember,
 } from 'wechaty-puppet/payloads'
 
+import type { RawMessage, UserInfo } from '@wcferry/core'
 import { xmlDecrypt, xmlToJson } from '../utils'
-import type { PrefixStorage, PuppetContact, PuppetFerryOptions, PuppetFerryUserOptions, PuppetRoom, WcfRustApiRecvMsg, WcfRustApiUser } from '../types'
 import { normalizedMsg } from '../utils/msg'
-import { FerryAgent } from './FerryAgent'
+import type { PrefixStorage, PuppetContact, PuppetRoom, PuppetWcferryOptions, PuppetWcferryUserOptions } from '../types/puppetWcferry'
+import { AgentWcferry } from './AgentWcferry'
 
-export function resolvePuppetFerryOptions(userOptions: PuppetFerryUserOptions): PuppetFerryOptions {
+export function resolvePuppetWcferryOptions(userOptions: PuppetWcferryUserOptions): PuppetWcferryOptions {
   return {
-    agent: new FerryAgent(),
+    agent: new AgentWcferry(),
     storage: createStorage(),
     ...userOptions,
   }
@@ -31,18 +31,18 @@ export function resolvePuppetFerryOptions(userOptions: PuppetFerryUserOptions): 
 
 const VERSION = '3.9.10.27'
 
-export class PuppetFerry extends PUPPET.Puppet {
+export class PuppetWcferry extends PUPPET.Puppet {
   static override readonly VERSION = VERSION
-  agent: FerryAgent
+  agent: AgentWcferry
   storage: Storage<StorageValue>
   private contactStorage: PrefixStorage<Contact>
   private roomStorage: PrefixStorage<PuppetRoom>
   private messageStorage: PrefixStorage<Message>
 
-  constructor(options: PuppetFerryUserOptions = {}) {
+  constructor(options: PuppetWcferryUserOptions = {}) {
     super()
 
-    const { agent, storage } = resolvePuppetFerryOptions(options)
+    const { agent, storage } = resolvePuppetWcferryOptions(options)
     this.agent = agent
     this.storage = storage
     this.contactStorage = this.createPrefixStorage<PuppetContact>(storage, 'contact')
@@ -424,7 +424,6 @@ export class PuppetFerry extends PUPPET.Puppet {
       const aeskey = content.msg[config.attr].aeskey
       const cdnUrl = content.msg[config.attr].cdnvideourl
       const fileName = `message_${aeskey}${config.suffix}`
-
       // TODO: download file
     }
     catch (error: any) {
@@ -617,65 +616,50 @@ export class PuppetFerry extends PUPPET.Puppet {
 
     if (!conversationId.includes('@chatroom')) {
       log.verbose('messageSendText', 'normal text')
-      await this.agent.api.sendText(conversationId, text)
+      this.agent.sendTxt(text, conversationId)
       return
     }
 
     if (text.includes('@all')) {
       log.verbose('messageSendText', 'at all')
       text = text.replace('@all', '@所有人').trim()
-      await this.agent.api.sendText(conversationId, text, ['notify@all'])
+      await this.agent.sendTxt(text, conversationId, ['notify@all'])
     }
     else if (/@\[mention:[^\]]+\]/.test(text)) {
       log.verbose('messageSendText', 'at mention')
       const { mentions, message } = this.mentionTextParser(text)
       const mentionText = this.getMentionText(conversationId, mentions)
-      await this.agent.api.sendText(conversationId, `${mentionText} ${message}`, mentions)
+      await this.agent.sendTxt(`${mentionText} ${message}`, conversationId, mentions)
     }
     else {
       log.verbose('messageSendText', 'normal text')
-      await this.agent.api.sendText(conversationId, text)
+      await this.agent.sendTxt(text, conversationId)
     }
   }
 
   override async messageSendFile(conversationId: string, file: FileBoxInterface): Promise<string | void>
   override async messageSendFile(conversationId: string, file: FileBoxInterface): Promise<string | void> {
     log.verbose('PuppetBridge', 'messageSendFile(%s, %s)', conversationId, file)
-    const dir = await fse.mkdtemp('ferry')
-    const filePath = dir + file.name
-    if (
-      !await fse.exists(filePath)
-    ) {
-      try {
-        await file.toFile(filePath)
-      }
-      catch (err) {
-        log.error('file.toFile(filePath) fail:', err)
-      }
-    }
-
     if (file.mediaType.startsWith('image')) {
-      await this.agent.api.sendImage(conversationId, filePath)
+      await this.agent.sendImage(await file.toBuffer(), conversationId)
     }
     else {
-      await this.agent.api.sendFile(conversationId, filePath)
+      await this.agent.sendFile(await file.toBuffer(), conversationId)
     }
-
-    process.nextTick(async () => {
-      try {
-        await fse.unlink(filePath)
-      }
-      catch (err) {
-        log.error('messageSendFile.unlink fail:', err)
-      }
-    })
   }
 
   override messageSendUrl(conversationId: string, urlLinkPayload: PUPPET.payloads.UrlLink): Promise<string | void>
   override async messageSendUrl(conversationId: string, urlLinkPayload: PUPPET.payloads.UrlLink): Promise<string | void> {
     log.verbose('PuppetBridge', 'messageSendUrl(%s, %s)', conversationId, urlLinkPayload)
-    // TODO: 发送链接
-    throw new Error('not support messageSendUrl')
+    this.agent.sendRichText({
+      title: urlLinkPayload.title,
+      digest: urlLinkPayload.description,
+      thumburl: urlLinkPayload.thumbnailUrl,
+      url: urlLinkPayload.url,
+      // TODO: support name and account
+      // name: urlLinkPayload.name,
+      // account: urlLinkPayload.account,
+    }, conversationId)
   }
 
   override async messageSendContact(conversationId: string, contactId: string): Promise<string | void>
@@ -701,8 +685,7 @@ export class PuppetFerry extends PUPPET.Puppet {
   override messageForward(conversationId: string, messageId: string): Promise<string | void>
   override async messageForward(conversationId: string, messageId: string): Promise<string | void> {
     log.verbose('PuppetBridge', 'messageForward(%s, %s)', conversationId, messageId)
-
-    await this.agent.api.forwardMessage(conversationId, messageId)
+    this.agent.forwardMsg(messageId, conversationId)
   }
 
   override messageSendLocation(
@@ -731,25 +714,32 @@ export class PuppetFerry extends PUPPET.Puppet {
   // #region Core
 
   async onStart() {
-    this.agent.start()
     this.agent.on('message', this.onMessage.bind(this))
     this.agent.on('login', this.onLogin.bind(this))
+    this.agent.start()
   }
 
   async onStop() {
     this.agent.stop()
   }
 
-  async onLogin(user: WcfRustApiUser) {
+  async onLogin(user: UserInfo) {
     log.verbose('PuppetBridge', 'onLogin() user %s', JSON.stringify(user))
-
     await this.loadContacts()
     await this.loadRooms()
+    this.contactStorage.setItem(user.wxid, {
+      avatar: '',
+      gender: PUPPET.types.ContactGender.Unknown,
+      id: user.wxid,
+      name: user.name,
+      phone: [user.mobile],
+      type: PUPPET.types.Contact.Individual,
+    })
     this.login(user.wxid)
     nextTick(() => this.emit('ready'))
   }
 
-  async onMessage(message: WcfRustApiRecvMsg) {
+  async onMessage(message: RawMessage) {
     log.verbose('PuppetBridge', 'onMessage()')
 
     if (!message)
@@ -758,7 +748,7 @@ export class PuppetFerry extends PUPPET.Puppet {
     this.msgHandler(message)
   }
 
-  async msgHandler(message: WcfRustApiRecvMsg) {
+  async msgHandler(message: RawMessage) {
     const roomId = message.is_group ? message.roomid : ''
     const talkerId = message.sender
     const listenerId = message.sender
@@ -830,11 +820,11 @@ export class PuppetFerry extends PUPPET.Puppet {
     if (exist && !forceUpdate)
       return
     try {
-      const roomInfo = await this.agent.api.chatroomInfo(room.id)
+      const roomInfo = this.agent.getChatRoomInfo(room.id)
       room.announce = roomInfo.Announcement
       room.topic = roomInfo.NickName
       room.avatar = roomInfo.smallHeadImgUrl
-      const members = await this.agent.api.chatroomMembers(room.id)
+      const members = this.agent.getChatRoomMembers(room.id)
       room.memberIdList = members.map(member => member.UserName)
       room.members = members.map((member) => {
         return {
@@ -869,7 +859,7 @@ export class PuppetFerry extends PUPPET.Puppet {
       return
 
     try {
-      const contactInfo = await this.agent.api.contactInfo(contact.id)
+      const contactInfo = this.agent.getContactInfo(contact.id)
       if (!contactInfo)
         return
 
@@ -892,7 +882,7 @@ export class PuppetFerry extends PUPPET.Puppet {
   private async loadContacts() {
     log.verbose('PuppetBridge', 'loadContacts()')
     try {
-      const contacts = await this.agent.api.contactList()
+      const contacts = this.agent.getContactList()
 
       for (const contact of contacts) {
         let contactType = PUPPET.types.Contact.Individual
@@ -943,13 +933,13 @@ export class PuppetFerry extends PUPPET.Puppet {
   private async loadRooms(): Promise<void> {
     log.verbose('PuppetBridge', 'loadRooms()')
     try {
-      const roomsData = await this.agent.api.chatroomDetailList()
+      const roomsData = this.agent.getChatRoomDetailList()
 
       if (!roomsData)
         throw new Error('no rooms data')
 
       for (const room of roomsData) {
-        const chatroomMembers = await this.agent.api.chatroomMembers(
+        const chatroomMembers = this.agent.getChatRoomMembers(
           room.UserName,
         )
         const membersPromise = room.memberIdList.map(async (userName) => {
@@ -1007,7 +997,7 @@ export class PuppetFerry extends PUPPET.Puppet {
     }
   }
 
-  private isRoomOps = (message: WcfRustApiRecvMsg) => {
+  private isRoomOps = (message: RawMessage) => {
     const type = message.type.valueOf()
     return [10000, 10002].includes(type)
   }
@@ -1018,4 +1008,11 @@ export class PuppetFerry extends PUPPET.Puppet {
   }
 
   // #endregion
+}
+
+declare module 'wechaty-puppet' {
+  export interface UrlLinkPayload {
+    name?: string
+    account?: string
+  }
 }

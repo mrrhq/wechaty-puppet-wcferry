@@ -1,12 +1,17 @@
 // @ts-check
-import mrrhq from '@antfu/eslint-config'
+import antfu from '@antfu/eslint-config'
 
-export default mrrhq(
+export default antfu(
   {
     type: 'lib',
     rules: {
       'ts/explicit-function-return-type': 'off',
       'no-case-declarations': 'off',
     },
+  },
+  {
+    ignores: [
+      '**/node-wcferry/',
+    ],
   },
 )

@@ -1,5 +1,4 @@
 syntax = "proto3";
-package app.protobuf;
 
 message RoomData {
   message RoomMember {

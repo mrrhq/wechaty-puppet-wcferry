@@ -4,7 +4,7 @@ import type {
   Room,
   RoomMember,
 } from 'wechaty-puppet/payloads'
-import type { FerryAgent } from '../context'
+import type { AgentWcferry } from '../context/AgentWcferry'
 
 export interface PuppetRoom extends Room {
   announce: string
@@ -15,12 +15,12 @@ export interface PuppetContact extends Contact {
 
 }
 
-export interface PuppetFerryUserOptions {
-  agent?: FerryAgent
+export interface PuppetWcferryUserOptions {
+  agent?: AgentWcferry
   storage?: Storage
 }
 
-export interface PuppetFerryOptions extends Required<PuppetFerryUserOptions> { }
+export interface PuppetWcferryOptions extends Required<PuppetWcferryUserOptions> { }
 
 export interface PrefixStorage<T extends StorageValue> extends Storage<T> {
   getItemsMap: (base?: string) => Promise<{
