@@ -1,4 +1,4 @@
-# wechaty-puppet-ferry
+# wechaty-puppet-wcferry
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
@@ -13,20 +13,21 @@ Wechaty Puppet for WechatFerry
 Install:
 
 ```bash
-pnpm add wechaty wechaty-puppet-ferry
+pnpm add wechaty wechaty-puppet-wcferry
 ```
 
 Import:
 
 ```js
 import { WechatyBuilder, log } from 'wechaty'
-import { PuppetFerry } from 'wechaty-puppet-ferry'
+import { PuppetWcferry } from 'wechaty-puppet-wcferry'
 
-const puppet = new PuppetFerry()
+const puppet = new PuppetWcferry()
 const bot = WechatyBuilder.build({ puppet })
 
 bot.on('start', () => log.info('start'))
 bot.on('ready', () => log.info('ready'))
+bot.on('login', user => log.info(`${user.name()} login`))
 bot.on('message', (msg) => {
   const taler = msg.talker()
   if (msg.type() === bot.Message.Type.Text) {
@@ -51,13 +52,13 @@ Set [WcfRust](https://github.com/lich0821/wcf-client-rust) callback url to `http
 
 <!-- Badges -->
 
-[npm-version-src]: https://img.shields.io/npm/v/wechaty-puppet-ferry?style=flat&colorA=080f12&colorB=1fa669
-[npm-version-href]: https://npmjs.com/package/wechaty-puppet-ferry
-[npm-downloads-src]: https://img.shields.io/npm/dm/wechaty-puppet-ferry?style=flat&colorA=080f12&colorB=1fa669
-[npm-downloads-href]: https://npmjs.com/package/wechaty-puppet-ferry
-[bundle-src]: https://img.shields.io/bundlephobia/minzip/wechaty-puppet-ferry?style=flat&colorA=080f12&colorB=1fa669&label=minzip
-[bundle-href]: https://bundlephobia.com/result?p=wechaty-puppet-ferry
-[license-src]: https://img.shields.io/github/license/mrrhq/wechaty-puppet-ferry.svg?style=flat&colorA=080f12&colorB=1fa669
-[license-href]: https://github.com/mrrhq/wechaty-puppet-ferry/blob/main/LICENSE
+[npm-version-src]: https://img.shields.io/npm/v/wechaty-puppet-wcferry?style=flat&colorA=080f12&colorB=1fa669
+[npm-version-href]: https://npmjs.com/package/wechaty-puppet-wcferry
+[npm-downloads-src]: https://img.shields.io/npm/dm/wechaty-puppet-wcferry?style=flat&colorA=080f12&colorB=1fa669
+[npm-downloads-href]: https://npmjs.com/package/wechaty-puppet-wcferry
+[bundle-src]: https://img.shields.io/bundlephobia/minzip/wechaty-puppet-wcferry?style=flat&colorA=080f12&colorB=1fa669&label=minzip
+[bundle-href]: https://bundlephobia.com/result?p=wechaty-puppet-wcferry
+[license-src]: https://img.shields.io/github/license/mrrhq/wechaty-puppet-wcferry.svg?style=flat&colorA=080f12&colorB=1fa669
+[license-href]: https://github.com/mrrhq/wechaty-puppet-wcferry/blob/main/LICENSE
 [jsdocs-src]: https://img.shields.io/badge/jsdocs-reference-080f12?style=flat&colorA=080f12&colorB=1fa669
-[jsdocs-href]: https://www.jsdocs.io/package/wechaty-puppet-ferry
+[jsdocs-href]: https://www.jsdocs.io/package/wechaty-puppet-wcferry
