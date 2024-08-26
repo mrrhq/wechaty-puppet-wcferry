@@ -1,23 +1,24 @@
 {
   "name": "wechaty-puppet-wcferry",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "packageManager": "pnpm@9.8.0",
   "description": "Wechaty Puppet for WechatFerry",
   "author": "mrrhq <sanhua@himrr.com>",
   "license": "MIT",
   "funding": "https://github.com/sponsors/mrrhq",
-  "homepage": "https://github.com/mrrhq/wechaty-puppet-ferry#readme",
+  "homepage": "https://github.com/mrrhq/wechaty-puppet-wcferry#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mrrhq/wechaty-puppet-ferry.git"
+    "url": "git+https://github.com/mrrhq/wechaty-puppet-wcferry.git"
   },
-  "bugs": "https://github.com/mrrhq/wechaty-puppet-ferry/issues",
+  "bugs": "https://github.com/mrrhq/wechaty-puppet-wcferry/issues",
   "keywords": [
     "wechat",
     "wechaty",
     "WechatFerry",
-    "wechaty-puppet"
+    "wechaty-puppet",
+    "wcferry"
   ],
   "sideEffects": false,
   "exports": {
