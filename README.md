@@ -38,10 +38,6 @@ bot.on('message', (msg) => {
 bot.start()
 ```
 
-Callback:
-
-Set [WcfRust](https://github.com/lich0821/wcf-client-rust) callback url to `http://localhost:10011/callback` and click start button
-
 ## Funding
 
 <img src="./FUNDING.jpg" width="200" />
