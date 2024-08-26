@@ -2,12 +2,16 @@ import EventEmitter from 'node:events'
 import type { Buffer } from 'node:buffer'
 import process from 'node:process'
 import type { Knex } from 'knex'
-import type { FileSavableInterface, RawMessage, UserInfo, WcferryOptions } from '@wcferry/core'
-import { Wcferry } from '@wcferry/core'
+import type { FileSavableInterface, RawMessage, UserInfo, Wcferry, WcferryOptions } from '@wcferry/core'
+import * as _WcferryCore from '@wcferry/core'
+
 import type { wcf } from '@wcferry/core/src/lib/proto-generated/wcf'
+import { interopDefault } from 'mlly'
 import { decodeBytesExtra, decodeRoomData, getWxidFromBytesExtra } from '../utils'
 import type { MSG } from './knex'
 import { useMSG0DbQueryBuilder, useMicroMsgDbQueryBuilder } from './knex'
+
+const WcferryCore = interopDefault(_WcferryCore)
 
 type PromiseReturnType<T> = T extends Promise<infer R> ? R : never
 
@@ -24,7 +28,7 @@ export class AgentWcferry extends EventEmitter<FerryAgentHooks> implements Pick<
   private isLoggedIn = false
   constructor(options: WcferryOptions = {}) {
     super()
-    this.wcf = new Wcferry(options)
+    this.wcf = new WcferryCore.Wcferry(options)
   }
 
   start() {

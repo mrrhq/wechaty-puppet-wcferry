@@ -17,6 +17,9 @@ importers:
       knex:
         specifier: ^3.1.0
         version: 3.1.0
+      mlly:
+        specifier: ^1.7.1
+        version: 1.7.1
       protobufjs:
         specifier: ^7.4.0
         version: 7.4.0
@@ -3194,9 +3197,6 @@ packages:
       vue-tsc:
         optional: true
 
-  mlly@1.7.0:
-    resolution: {integrity: sha512-U9SDaXGEREBYQgfejV97coK0UL1r+qnF2SyO9A3qcI8MzKnsIFKHNVEkrDyNncQTKQQumsasmeq84eNMdBfsNQ==}
-
   mlly@1.7.1:
     resolution: {integrity: sha512-rrVRZRELyQzrIUAVMHxP97kv+G786pHmOKzuFII8zDYahFBS7qnHh2AlYSl1GAHhaMPCz6/oHjVMcfFYgFYHgA==}
 
@@ -5879,6 +5879,10 @@ snapshots:
     dependencies:
       acorn: 8.12.0
 
+  acorn-jsx@5.3.2(acorn@8.12.1):
+    dependencies:
+      acorn: 8.12.1
+
   acorn@8.12.0: {}
 
   acorn@8.12.1: {}
@@ -6825,8 +6829,8 @@ snapshots:
 
   espree@9.6.1:
     dependencies:
-      acorn: 8.12.0
-      acorn-jsx: 5.3.2(acorn@8.12.0)
+      acorn: 8.12.1
+      acorn-jsx: 5.3.2(acorn@8.12.1)
       eslint-visitor-keys: 3.4.3
 
   esquery@1.6.0:
@@ -7510,7 +7514,7 @@ snapshots:
 
   local-pkg@0.5.0:
     dependencies:
-      mlly: 1.7.0
+      mlly: 1.7.1
       pkg-types: 1.2.0
 
   locate-path@5.0.0:
@@ -7691,7 +7695,7 @@ snapshots:
       fs-extra: 11.2.0
       globby: 14.0.1
       jiti: 1.21.0
-      mlly: 1.7.0
+      mlly: 1.7.1
       mri: 1.2.0
       pathe: 1.1.2
       pkg-types: 1.2.0
@@ -7700,13 +7704,6 @@ snapshots:
       semver: 7.6.2
     optionalDependencies:
       typescript: 5.5.4
-
-  mlly@1.7.0:
-    dependencies:
-      acorn: 8.12.0
-      pathe: 1.1.2
-      pkg-types: 1.2.0
-      ufo: 1.5.3
 
   mlly@1.7.1:
     dependencies:
@@ -8639,7 +8636,7 @@ snapshots:
       jiti: 1.21.0
       magic-string: 0.30.10
       mkdist: 1.5.1(typescript@5.5.4)
-      mlly: 1.7.0
+      mlly: 1.7.1
       pathe: 1.1.2
       pkg-types: 1.2.0
       pretty-bytes: 6.1.1
