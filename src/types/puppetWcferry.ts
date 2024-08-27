@@ -12,7 +12,7 @@ export interface PuppetRoom extends Room {
 }
 
 export interface PuppetContact extends Contact {
-
+  tags: string[]
 }
 
 export interface PuppetWcferryUserOptions {

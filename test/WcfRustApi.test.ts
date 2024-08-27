@@ -9,14 +9,24 @@ const wcf = new AgentWcferry()
 beforeAll(() => wcf.start())
 afterAll(() => wcf.stop())
 
-describe.skip('wcfRustApi', () => {
-  it('historyMessageList', () => {
+describe('wcfRustApi', () => {
+  it.skip('historyMessageList', () => {
     const data = wcf.getHistoryMessageList(env.TEST_ROOM_ID, sql => sql.limit(10))
     expect(data).toBeDefined()
   })
 
-  it('chatroom', () => {
+  it.skip('chatroom', () => {
     const data = wcf.getChatRoomDetailList()
+    expect(data).toBeDefined()
+  })
+
+  it.skip('tagList', () => {
+    const data = wcf.getTagList()
+    expect(data).toBeDefined()
+  })
+
+  it.skip('contactList', () => {
+    const data = wcf.getContactList()
     expect(data).toBeDefined()
   })
 })

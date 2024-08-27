@@ -22,6 +22,10 @@ export interface FerryAgentHooks {
   error: [error: Error]
 }
 
+function toArray<T>(input: T | Array<T>) {
+  return Array.isArray(input) ? input : [input]
+}
+
 export class AgentWcferry extends EventEmitter<FerryAgentHooks> implements Pick<Wcferry, 'sendTxt' | 'sendFile' | 'sendImage' | 'sendRichText' | 'forwardMsg' | 'dbSqlQuery' | 'start' | 'stop'> {
   wcf: Wcferry
   private timer: number | null = null
@@ -30,6 +34,8 @@ export class AgentWcferry extends EventEmitter<FerryAgentHooks> implements Pick<
     super()
     this.wcf = new WcferryCore.Wcferry(options)
   }
+
+  // #region Core
 
   start() {
     this.wcf.start()
@@ -49,30 +55,6 @@ export class AgentWcferry extends EventEmitter<FerryAgentHooks> implements Pick<
     if (this.isLoggedIn) {
       this.emit('logout')
     }
-  }
-
-  sendImage(image: string | Buffer | { type: 'Buffer', data: number[] } | FileSavableInterface, receiver: string) {
-    return this.wcf.sendImage(image, receiver)
-  }
-
-  sendFile(file: string | Buffer | { type: 'Buffer', data: number[] } | FileSavableInterface, receiver: string) {
-    return this.wcf.sendFile(file, receiver)
-  }
-
-  sendRichText(desc: Omit<ReturnType<wcf.RichText['toObject']>, 'receiver'>, receiver: string) {
-    return this.wcf.sendRichText(desc, receiver)
-  }
-
-  forwardMsg(msgid: string, receiver: string) {
-    return this.wcf.forwardMsg(msgid, receiver)
-  }
-
-  sendTxt(msg: string, receiver: string, aters?: string | string[]): number {
-    return this.wcf.sendTxt(msg, receiver, Array.isArray(aters) ? aters.join(',') : aters)
-  }
-
-  dbSqlQuery<T>(db: string, sql: string | Knex.QueryBuilder): T {
-    return this.wcf.dbSqlQuery(db, typeof sql === 'string' ? sql : sql.toQuery()) as T
   }
 
   private catchErrors() {
@@ -106,6 +88,48 @@ export class AgentWcferry extends EventEmitter<FerryAgentHooks> implements Pick<
     clearInterval(this.timer!)
     this.timer = null
   }
+
+  // #endregion
+
+  // #region Wcferry
+
+  sendImage(image: string | Buffer | { type: 'Buffer', data: number[] } | FileSavableInterface, receiver: string) {
+    return this.wcf.sendImage(image, receiver)
+  }
+
+  sendFile(file: string | Buffer | { type: 'Buffer', data: number[] } | FileSavableInterface, receiver: string) {
+    return this.wcf.sendFile(file, receiver)
+  }
+
+  sendRichText(desc: Omit<ReturnType<wcf.RichText['toObject']>, 'receiver'>, receiver: string) {
+    return this.wcf.sendRichText(desc, receiver)
+  }
+
+  forwardMsg(msgid: string, receiver: string) {
+    return this.wcf.forwardMsg(msgid, receiver)
+  }
+
+  sendTxt(msg: string, receiver: string, aters?: string | string[]): number {
+    return this.wcf.sendTxt(msg, receiver, Array.isArray(aters) ? aters.join(',') : aters)
+  }
+
+  dbSqlQuery<T>(db: string, sql: string | Knex.QueryBuilder): T {
+    return this.wcf.dbSqlQuery(db, typeof sql === 'string' ? sql : sql.toQuery()) as T
+  }
+
+  addChatRoomMembers(roomId: string, contactIds: string | string[]) {
+    return this.wcf.addChatRoomMembers(roomId, toArray(contactIds))
+  }
+
+  inviteChatRoomMembers(roomId: string, contactIds: string | string[]) {
+    return this.wcf.inviteChatroomMembers(roomId, toArray(contactIds))
+  }
+
+  removeChatRoomMembers(roomId: string, contactIds: string | string[]) {
+    return this.wcf.delChatRoomMembers(roomId, toArray(contactIds))
+  }
+
+  // #endregion
 
   // #region MicroMsg.db
   /**
@@ -232,7 +256,10 @@ export class AgentWcferry extends EventEmitter<FerryAgentHooks> implements Pick<
     const { db, knex } = useMicroMsgDbQueryBuilder()
     const sql = knex.from('Contact').where('UserName', userName)
     const [data] = this.dbSqlQuery<PromiseReturnType<typeof sql>>(db, sql)
-    return data
+    return {
+      ...data,
+      tags: data.LabelIDList?.split(',').filter(v => v) ?? [],
+    }
   }
 
   /**
@@ -242,7 +269,7 @@ export class AgentWcferry extends EventEmitter<FerryAgentHooks> implements Pick<
     const { db, knex } = useMicroMsgDbQueryBuilder()
     const sql = knex
       .from('Contact')
-      .select('NickName', 'UserName', 'Remark', 'PYInitial', 'RemarkPYInitial')
+      .select('NickName', 'UserName', 'Remark', 'PYInitial', 'RemarkPYInitial', 'LabelIDList')
       .leftJoin(
         'ContactHeadImgUrl',
         'Contact.UserName',
@@ -260,8 +287,24 @@ export class AgentWcferry extends EventEmitter<FerryAgentHooks> implements Pick<
       .andWhereNot('UserName', 'like', '%chatroom%')
       .orderBy('Remark', 'desc')
 
+    const result = this.dbSqlQuery<PromiseReturnType<typeof sql>>(db, sql)
+
+    return result.map((v) => {
+      return {
+        ...v,
+        tags: v.LabelIDList?.split(',').filter(v => v) ?? [],
+      }
+    })
+  }
+
+  getTagList() {
+    const { db, knex } = useMicroMsgDbQueryBuilder()
+    const sql = knex.from('ContactLabel')
+      .select('LabelID', 'LabelName')
+
     return this.dbSqlQuery<PromiseReturnType<typeof sql>>(db, sql)
   }
+
   // #endregion
 
   // #region MSG0.db

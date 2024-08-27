@@ -10,8 +10,9 @@ export interface Contact {
   UserName: string
   Type: number
   VerifyFlag: number
-  Remark?: string
-  RemarkPYInitial?: string
+  Remark: string
+  RemarkPYInitial: string
+  LabelIDList: string
 }
 
 export interface ChatRoomInfo {
@@ -31,6 +32,11 @@ export interface ContactHeadImgUrl {
   bigHeadImgUrl: string
   smallHeadImgUrl: string
   usrName: string
+}
+
+export interface ContactLabel {
+  LabelName: string
+  LabelID: string
 }
 // #endregion
 
@@ -67,6 +73,7 @@ declare module 'knex/types/tables' {
     ChatRoomInfo: ChatRoomInfo
     ChatRoom: ChatRoom
     ContactHeadImgUrl: ContactHeadImgUrl
+    ContactLabel: ContactLabel
 
     MSG: MSG
     Name2ID: Name2ID

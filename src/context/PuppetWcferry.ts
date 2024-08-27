@@ -35,7 +35,7 @@ export class PuppetWcferry extends PUPPET.Puppet {
   static override readonly VERSION = VERSION
   agent: AgentWcferry
   storage: Storage<StorageValue>
-  private contactStorage: PrefixStorage<Contact>
+  private contactStorage: PrefixStorage<PuppetContact>
   private roomStorage: PrefixStorage<PuppetRoom>
   private messageStorage: PrefixStorage<Message>
 
@@ -306,7 +306,122 @@ export class PuppetWcferry extends PUPPET.Puppet {
 
   // #region Room OPS
 
-  // TODO: 群聊操作
+  override async roomTopic(roomId: string): Promise<string>
+  override async roomTopic(roomId: string, topic: string): Promise<void>
+  override async roomTopic(roomId: unknown, topic?: unknown): Promise<string | void> {
+    log.verbose('PuppetBridge', 'roomTopic(%s, %s)', roomId, topic || '')
+    throw new Error('not support roomTopic')
+  }
+
+  override roomAnnounce(roomId: string): Promise<string>
+  override roomAnnounce(roomId: string, text: string): Promise<void>
+  override roomAnnounce(roomId: unknown, text?: unknown): Promise<void> | Promise<string> {
+    log.verbose('PuppetBridge', 'roomAnnounce(%s, %s)', roomId, text || '')
+    throw new Error('not support roomAnnounce')
+  }
+
+  override async roomAdd(roomId: string, contactId: string): Promise<void> {
+    log.verbose('PuppetBridge', 'roomAdd(%s, %s)', roomId, contactId)
+
+    if (!roomId || !contactId) {
+      log.error('roomAdd: roomId or contactId not found')
+      return
+    }
+
+    const memberList = await this.roomMemberList(roomId)
+
+    if (memberList.includes(contactId)) {
+      return
+    }
+
+    if (memberList.length > 40) {
+      this.agent.inviteChatRoomMembers(roomId, contactId)
+      return
+    }
+    this.agent.addChatRoomMembers(roomId, contactId)
+  }
+
+  override async roomDel(roomId: string, contactId: string): Promise<void> {
+    log.verbose('PuppetBridge', 'roomDel(%s, %s)', roomId, contactId)
+
+    if (!roomId || !contactId) {
+      log.error('roomDel: roomId or contactId not found')
+      return
+    }
+
+    this.agent.removeChatRoomMembers(roomId, [contactId])
+  }
+
+  override roomQuit(roomId: string): Promise<void> {
+    log.verbose('PuppetBridge', 'roomQuit(%s)', roomId)
+    throw new Error('not support roomQuit')
+  }
+
+  override roomCreate(contactIdList: string[], topic?: string | undefined): Promise<string> {
+    log.verbose('PuppetBridge', 'roomCreate(%s, %s)', contactIdList, topic || '')
+    throw new Error('not support roomCreate')
+  }
+
+  // #endregion
+
+  // #region Room Invitation
+
+  override roomInvitationRawPayload(roomInvitationId: string): Promise<any> {
+    log.verbose('PuppetBridge', 'roomInvitationRawPayload(%s)', roomInvitationId)
+    return this.messageStorage.getItem(roomInvitationId)
+  }
+
+  override roomInvitationRawPayloadParser(rawPayload: any): Promise<PUPPET.payloads.RoomInvitation> {
+    log.verbose('PuppetBridge', 'roomInvitationRawPayloadParser(%s)', JSON.stringify(rawPayload))
+    return rawPayload
+  }
+
+  override async roomInvitationAccept(roomInvitationId: string): Promise<void> {
+    log.verbose('PuppetBridge', 'roomInvitationAccept(%s)', roomInvitationId)
+    const message = await this.messageStorage.getItem(roomInvitationId)
+    if (!message)
+      throw new Error('message not found')
+
+    const content = await xmlDecrypt(message.text || '', message.type)
+    if (!content)
+      throw new Error('content not found')
+
+    const url = content?.url as string
+    if (!url)
+      throw new Error('url not found')
+
+    throw new Error('not support roomInvitationAccept')
+  }
+
+  // #endregion
+
+  // #region Tag
+
+  override tagContactAdd(tagId: string, contactId: string): Promise<void> {
+    log.verbose('PuppetBridge', 'tagContactAdd(%s, %s)', tagId, contactId)
+    throw new Error('not support tagContactAdd')
+  }
+
+  override tagContactDelete(tagId: string): Promise<void> {
+    log.verbose('PuppetBridge', 'tagContactDelete(%s)', tagId)
+    throw new Error('not support tagContactDelete')
+  }
+
+  override tagContactList(contactId: string): Promise<string[]>
+  override tagContactList(): Promise<string[]>
+  override async tagContactList(contactId?: string): Promise<string[]> {
+    log.verbose('PuppetBridge', 'tagContactList(%s)', contactId)
+    if (contactId) {
+      const contact = await this.contactStorage.getItem(contactId)
+      return contact?.tags || []
+    }
+    return this.agent.getTagList().map(v => v.LabelID)
+  }
+
+  override tagContactRemove(tagId: string, contactId: string): Promise<void> {
+    log.verbose('PuppetBridge', 'tagContactDelete(%s)', tagId)
+    throw new Error('not support tagContactRemove')
+  }
 
   // #endregion
 
@@ -734,6 +849,7 @@ export class PuppetWcferry extends PUPPET.Puppet {
       name: user.name,
       phone: [user.mobile],
       type: PUPPET.types.Contact.Individual,
+      tags: [],
     })
     this.login(user.wxid)
     nextTick(() => this.emit('ready'))
@@ -796,7 +912,76 @@ export class PuppetWcferry extends PUPPET.Puppet {
     if (!roomId)
       return
 
-    throw new Error('not support roomMsgHandler')
+    const room = await this.roomStorage.getItem(roomId)
+    if (!room)
+      return
+
+    if (text?.includes('修改群名为')) {
+      let topic = ''
+      const oldTopic = room ? room.topic : ''
+      const contactNames = text.split('修改群名为')
+      let changer: PUPPET.payloads.Contact | null = null
+      if (contactNames[0]) {
+        topic = contactNames[1]?.split(/[“”"]/)[1] || ''
+
+        log.info('PuppetBridge', 'roomMsg() topic %s', topic)
+
+        room.topic = topic
+        await this.roomStorage.setItem(roomId, room)
+
+        if (contactNames[0] === '你') {
+          changer = await this.contactStorage.getItem(this.currentUserId)
+        }
+        else {
+          const member = await this.findMemberByUserName(contactNames[0], room)
+          if (member) {
+            changer = {
+              id: member.id,
+              name: member.name,
+              avatar: member.avatar,
+            } as PUPPET.payloads.Contact
+          }
+        }
+
+        this.emit('room-topic', { changerId: changer?.id, newTopic: topic, oldTopic, roomId })
+      }
+    }
+
+    if (text?.includes('添加为群管理员')) {
+      const contactNames = text.split(/将|添加为群管理员/)
+
+      if (contactNames.length > 2 && contactNames[0] && contactNames[1]) {
+        const { contact, contactIds } = await this.getOpsRelationship(contactNames, room)
+
+        if (contact && contactIds.length > 0) {
+          this.emit('room-admin', { adminIdList: contactIds, operatorId: contact.id, roomId })
+        }
+      }
+    }
+
+    if (text?.includes('加入了群聊')) {
+      const contactNames = text.split(/邀请|加入了群聊/)
+
+      if (contactNames.length > 2 && contactNames[0] && contactNames[1]) {
+        const { contact, contactIds } = await this.getOpsRelationship(contactNames, room)
+
+        if (contact && contactIds.length > 0) {
+          this.emit('room-join', { inviteeIdList: contactIds, inviterId: contact.id, roomId })
+        }
+      }
+    }
+
+    if (text?.includes('移出了群聊')) {
+      const contactNames = text.split(/将|移出了群聊/)
+
+      if (contactNames.length > 2 && contactNames[0] && contactNames[1]) {
+        const { contact, contactIds } = await this.getOpsRelationship(contactNames, room)
+
+        if (contact && contactIds.length > 0) {
+          this.emit('room-leave', { removeeIdList: contactIds, removerId: contact.id, roomId })
+        }
+      }
+    }
   }
 
   private inviteMsgHandler = (message: Message) => {
@@ -870,7 +1055,7 @@ export class PuppetWcferry extends PUPPET.Puppet {
       // contact.address = contactInfo.province + contactInfo.city;
       // contact.alias = contactInfo.alias;
       // contact.signature = contactInfo.signature;
-      // contact.tags = contactInfo?.labelIds.map((id) => String(id)) || [];
+      contact.tags = contactInfo.tags
 
       await this.contactStorage.setItem(contact.id, contact)
     }
@@ -901,6 +1086,7 @@ export class PuppetWcferry extends PUPPET.Puppet {
           friend: true,
           phone: [] as string[],
           avatar: contact.smallHeadImgUrl,
+          tags: contact.tags,
         } as PuppetContact
 
         this.contactStorage.setItem(contact.UserName, contactPayload)
@@ -1005,6 +1191,65 @@ export class PuppetWcferry extends PUPPET.Puppet {
   private isInviteMsg = (message: Message) => {
     const type = message.type.valueOf()
     return type === 14 && message.text?.includes('邀请你加入群聊')
+  }
+
+  private findMemberByName = (name: string, room: PuppetRoom) => {
+    const members = room.members || []
+    return members.find(member => member.name === name)
+  }
+
+  private findMemberByUserName = async (userName: string, room: PuppetRoom) => {
+    const name = userName.split(/[“”"]/)[1] || ''
+
+    if (!this.findMemberByName(name, room)) {
+      await this.updateRoomPayload(room, true)
+    }
+
+    return this.findMemberByName(name, room)
+  }
+
+  private getOpsRelationship = async (contactNames: string[], room: PuppetRoom) => {
+    let contact: PUPPET.payloads.Contact | null = null
+
+    const contactIds = []
+
+    if (contactNames[0] === '你') {
+      contact = await this.contactStorage.getItem(this.currentUserId)
+      const member = await this.findMemberByUserName(contactNames[1], room)
+      if (member) {
+        contactIds.push(member.id)
+      }
+    }
+    else if (contactNames[1] === '你') {
+      contactIds.push(this.currentUserId)
+      const member = await this.findMemberByUserName(contactNames[0], room)
+      if (member) {
+        contact = {
+          id: member.id,
+          name: member.name,
+          avatar: member.avatar,
+        } as PUPPET.payloads.Contact
+      }
+    }
+    else {
+      const opsMember = await this.findMemberByUserName(contactNames[0], room)
+      if (opsMember) {
+        contact = {
+          id: opsMember.id,
+          name: opsMember.name,
+          avatar: opsMember.avatar,
+        } as PUPPET.payloads.Contact
+      }
+      const member = await this.findMemberByUserName(contactNames[1], room)
+      if (member) {
+        contactIds.push(member.id)
+      }
+    }
+
+    return {
+      contact,
+      contactIds,
+    }
   }
 
   // #endregion
