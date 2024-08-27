@@ -842,7 +842,7 @@ export class PuppetWcferry extends PUPPET.Puppet {
     log.verbose('PuppetBridge', 'onLogin() user %s', JSON.stringify(user))
     await this.loadContacts()
     await this.loadRooms()
-    this.contactStorage.setItem(user.wxid, {
+    await this.contactStorage.setItem(user.wxid, {
       avatar: '',
       gender: PUPPET.types.ContactGender.Unknown,
       id: user.wxid,
@@ -894,14 +894,14 @@ export class PuppetWcferry extends PUPPET.Puppet {
     }
 
     if (this.isRoomOps(message)) {
-      this.roomMsgHandler(payload)
+      await this.roomMsgHandler(payload)
     }
     else if (this.isInviteMsg(payload)) {
       this.inviteMsgHandler(payload)
-      this.messageStorage.setItem(payload.id, payload)
+      await this.messageStorage.setItem(payload.id, payload)
     }
     else {
-      this.messageStorage.setItem(payload.id, payload)
+      await this.messageStorage.setItem(payload.id, payload)
       this.emit('message', { messageId: payload.id } as EventMessage)
     }
   }
@@ -1089,7 +1089,7 @@ export class PuppetWcferry extends PUPPET.Puppet {
           tags: contact.tags,
         } as PuppetContact
 
-        this.contactStorage.setItem(contact.UserName, contactPayload)
+        await this.contactStorage.setItem(contact.UserName, contactPayload)
       }
 
       const updateContactPromises = (await this.contactStorage.getItemsList()).map(
@@ -1152,7 +1152,7 @@ export class PuppetWcferry extends PUPPET.Puppet {
           memberIdList: room.memberIdList || [],
           members,
         } as PuppetRoom
-        this.roomStorage.setItem(room.UserName, roomPayload)
+        await this.roomStorage.setItem(room.UserName, roomPayload)
       }
       log.verbose(
         'PuppetBridge',
