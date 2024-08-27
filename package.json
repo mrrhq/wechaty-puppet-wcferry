@@ -56,7 +56,7 @@
     "prepare": "simple-git-hooks"
   },
   "dependencies": {
-    "@wcferry/core": "github:kejunmao/node-wcferry#build&path:packages/core",
+    "@wcferry/core": "git+https://github.com/kejunmao/node-wcferry#build&path:packages/core",
     "file-box": "^1.4.15",
     "knex": "^3.1.0",
     "mlly": "^1.7.1",
@@ -80,7 +80,8 @@
     "typescript": "^5.5.4",
     "unbuild": "^2.0.0",
     "vite": "^5.4.2",
-    "vitest": "^2.0.5"
+    "vitest": "^2.0.5",
+    "wechaty": "^1.20.2"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm lint-staged"

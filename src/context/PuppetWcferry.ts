@@ -1152,6 +1152,7 @@ export class PuppetWcferry extends PUPPET.Puppet {
           memberIdList: room.memberIdList || [],
           members,
         } as PuppetRoom
+
         await this.roomStorage.setItem(room.UserName, roomPayload)
       }
       log.verbose(
@@ -1172,7 +1173,7 @@ export class PuppetWcferry extends PUPPET.Puppet {
 
     const getItemsMap = async (base?: string) => {
       const keys = await s.getKeys(base)
-      return s.getItems(keys)
+      return await Promise.all(keys.map(async key => ({ key, value: await s.getItem(key) as T })))
     }
     return {
       ...s,

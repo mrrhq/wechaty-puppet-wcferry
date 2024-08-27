@@ -7,7 +7,9 @@ const bot = WechatyBuilder.build({
 })
 
 bot.on('start', () => log.info('start'))
-bot.on('ready', () => log.info('ready'))
+bot.on('ready', () => {
+  bot.Room.findAll()
+})
 bot.on('login', user => log.info(`${user.name()} login`))
 bot.on('message', (msg) => {
   const taler = msg.talker()

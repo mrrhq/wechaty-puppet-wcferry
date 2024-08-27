@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@wcferry/core':
-        specifier: github:kejunmao/node-wcferry#build&path:packages/core
+        specifier: git+https://github.com/kejunmao/node-wcferry#build&path:packages/core
         version: https://codeload.github.com/kejunmao/node-wcferry/tar.gz/39ee99d8ed385f7de0ada3bb2791d499950c00d1#path:packages/core
       file-box:
         specifier: ^1.4.15
@@ -78,6 +78,9 @@ importers:
       vitest:
         specifier: ^2.0.5
         version: 2.0.5(@types/node@22.5.0)
+      wechaty:
+        specifier: ^1.20.2
+        version: 1.20.2(@swc/core@1.7.18(@swc/helpers@0.5.12))(brolog@1.14.2)(redux@4.2.1)(rxjs@7.8.1)
 
   playground:
     dependencies:
