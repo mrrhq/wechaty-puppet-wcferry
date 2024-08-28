@@ -157,6 +157,7 @@ export class AgentWcferry extends EventEmitter<FerryAgentHooks> implements Pick<
         'ChatRoom.ChatRoomName',
       )
       .select(knex.ref('RoomData').withSchema('ChatRoom'))
+      .select(knex.ref('Reserved2').withSchema('ChatRoom'))
       .leftJoin(
         'ContactHeadImgUrl',
         'Contact.UserName',
@@ -172,6 +173,7 @@ export class AgentWcferry extends EventEmitter<FerryAgentHooks> implements Pick<
       const memberIdList = data.members?.map((v: any) => v.wxID) as string[]
       return {
         ...v,
+        ownerUserName: v.Reserved2,
         memberIdList,
       }
     })

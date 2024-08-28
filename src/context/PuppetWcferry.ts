@@ -841,15 +841,7 @@ export class PuppetWcferry extends PUPPET.Puppet {
     log.verbose('PuppetBridge', 'onLogin() user %s', JSON.stringify(user))
     await this.loadContacts()
     await this.loadRooms()
-    await this.contactStorage.setItem(user.wxid, {
-      avatar: '',
-      gender: PUPPET.types.ContactGender.Unknown,
-      id: user.wxid,
-      name: user.name,
-      phone: [user.mobile],
-      type: PUPPET.types.Contact.Individual,
-      tags: [],
-    })
+    await this.updateContactPayload({ id: user.wxid } as PuppetContact, true)
     this.login(user.wxid)
     nextTick(() => this.emit('ready'))
   }
@@ -1033,7 +1025,7 @@ export class PuppetWcferry extends PUPPET.Puppet {
     contact: PuppetContact,
     forceUpdate = false,
   ): Promise<void> {
-    // log.verbose("PuppetBridge", "updateContactPayload()");
+    log.verbose('PuppetBridge', 'updateContactPayload()')
 
     if (!contact)
       return
@@ -1047,7 +1039,7 @@ export class PuppetWcferry extends PUPPET.Puppet {
       if (!contactInfo)
         return
 
-      // TODO: 更多信息
+      // TODO: more data
       // contact.gender = contactInfo.sex;
       // contact.city = contactInfo.city;
       // contact.province = contactInfo.province;
@@ -1138,13 +1130,13 @@ export class PuppetWcferry extends PUPPET.Puppet {
         })
         const members = await Promise.all(membersPromise)
         const roomPayload = {
-          // TODO: more data
           id: room.UserName,
           avatar: room.smallHeadImgUrl,
           external: false,
-          // ownerId: room.ownerUserName || "",
+          ownerId: room.ownerUserName || '',
           announce: room.Announcement || '',
           topic: room.NickName || '',
+          // TODO: adminList
           // adminIdList:
           //   chatroomMembers
           //     .filter((member) => member.isChatroomAdmin)

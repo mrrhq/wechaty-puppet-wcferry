@@ -28,6 +28,8 @@ export interface ChatRoom {
   DisplayNameList: string
   UserNameList: string
   RoomData: Buffer
+  // 群主的 wxid
+  Reserved2: string
 }
 
 export interface ContactHeadImgUrl {
