@@ -272,7 +272,15 @@ export class AgentWcferry extends EventEmitter<FerryAgentHooks> implements Pick<
    */
   getContactInfo(userName: string) {
     const { db, knex } = useMicroMsgDbQueryBuilder()
-    const sql = knex.from('Contact').where('UserName', userName)
+    const sql = knex.from('Contact')
+      .select('NickName', 'UserName', 'Remark', 'PYInitial', 'RemarkPYInitial', 'LabelIDList')
+      .leftJoin(
+        'ContactHeadImgUrl',
+        'Contact.UserName',
+        'ContactHeadImgUrl.usrName',
+      )
+      .select(knex.ref('smallHeadImgUrl').withSchema('ContactHeadImgUrl'))
+      .where('UserName', userName)
     const [data] = this.dbSqlQuery<PromiseReturnType<typeof sql>>(db, sql)
     return {
       ...data,

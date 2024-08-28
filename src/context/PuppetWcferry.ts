@@ -66,6 +66,14 @@ export class PuppetWcferry extends PUPPET.Puppet {
 
   // #region Contact
 
+  private async getContact(contactId: string) {
+    const contact = await this.contactStorage.hasItem(contactId)
+    if (!contact) {
+      await this.updateContactPayload({ id: contactId } as any)
+    }
+    return this.contactStorage.getItem(contactId)
+  }
+
   override contactRawPayloadParser(rawPayload: any): Promise<PUPPET.payloads.Contact>
   override async contactRawPayloadParser(rawPayload: any): Promise<PUPPET.payloads.Contact> {
     return rawPayload
@@ -74,7 +82,13 @@ export class PuppetWcferry extends PUPPET.Puppet {
   override contactRawPayload(contactId: string): Promise<Contact | null>
   override contactRawPayload(contactId: string): Promise<Contact | null> {
     log.verbose('PuppetBridge', 'contactRawPayload(%s)', contactId)
-    return this.contactStorage.getItem(contactId)
+    return this.getContact(contactId)
+  }
+
+  override contactPayload(contactId: string): Promise<PUPPET.payloads.Contact>
+  override async contactPayload(contactId: string): Promise<PUPPET.payloads.Contact | null> {
+    log.verbose('PuppetBridge', 'contactPayload(%s)', contactId)
+    return this.getContact(contactId)
   }
 
   override contactAlias(contactId: string): Promise<string>
@@ -192,7 +206,6 @@ export class PuppetWcferry extends PUPPET.Puppet {
   }
 
   override roomPayload(roomId: string): Promise<PUPPET.payloads.Room>
-  override roomPayload(roomId: string): Promise<PUPPET.payloads.Room | null>
   override roomPayload(roomId: string): Promise<PUPPET.payloads.Room | null> {
     log.verbose('PuppetBridge', 'roomPayload(%s)', roomId)
     return this.getRoom(roomId)
@@ -1039,14 +1052,25 @@ export class PuppetWcferry extends PUPPET.Puppet {
       if (!contactInfo)
         return
 
-      // TODO: more data
-      // contact.gender = contactInfo.sex;
-      // contact.city = contactInfo.city;
-      // contact.province = contactInfo.province;
-      // contact.address = contactInfo.province + contactInfo.city;
-      // contact.alias = contactInfo.alias;
-      // contact.signature = contactInfo.signature;
-      contact.tags = contactInfo.tags
+      let contactType = PUPPET.types.Contact.Individual
+
+      if (contactInfo.UserName.startsWith('gh_')) {
+        contactType = PUPPET.types.Contact.Official
+      }
+      if (contactInfo.UserName.startsWith('@openim')) {
+        contactType = PUPPET.types.Contact.Corporation
+      }
+
+      contact = {
+        ...contact,
+        id: contactInfo.UserName,
+        name: contactInfo.NickName,
+        type: contactType,
+        friend: true,
+        phone: [] as string[],
+        avatar: contactInfo.smallHeadImgUrl,
+        tags: contactInfo.tags,
+      } as PuppetContact
 
       await this.contactStorage.setItem(contact.id, contact)
     }

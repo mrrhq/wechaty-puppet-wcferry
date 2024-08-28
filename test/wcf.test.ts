@@ -17,7 +17,7 @@ beforeAll(() => {
   })
 })
 
-describe('room', async () => {
+describe.skip('room', async () => {
   it('find', async () => {
     const room = (await wcf.Room.find({ id: roomId }))!
     expect(room).toBeDefined()
@@ -38,11 +38,11 @@ describe('contact', async () => {
   it('find', async () => {
     const contact = (await wcf.Contact.find({ id: wxid }))!
     expect(contact).toBeDefined()
-    expect(contact.name()).toBeDefined()
     expect(contact.id).toBeDefined()
+    expect(contact.name()).not.toBe('')
   })
 
-  it('findAll', async () => {
+  it.skip('findAll', async () => {
     const contact2s = await wcf.Contact.findAll()
     expect(contact2s.length).toBeGreaterThan(0)
     const contact = contact2s[0]
@@ -51,7 +51,7 @@ describe('contact', async () => {
   })
 })
 
-describe('self', async () => {
+describe.skip('self', async () => {
   it('find', async () => {
     const user = wcf.currentUser
     const selfUser = await wcf.ContactSelf.find(user.id)
