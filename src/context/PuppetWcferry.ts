@@ -771,9 +771,8 @@ export class PuppetWcferry extends PUPPET.Puppet {
       digest: urlLinkPayload.description,
       thumburl: urlLinkPayload.thumbnailUrl,
       url: urlLinkPayload.url,
-      // TODO: support name and account
-      // name: urlLinkPayload.name,
-      // account: urlLinkPayload.account,
+      name: urlLinkPayload.name,
+      account: urlLinkPayload.account,
     }, conversationId)
   }
 
@@ -1139,6 +1138,7 @@ export class PuppetWcferry extends PUPPET.Puppet {
         })
         const members = await Promise.all(membersPromise)
         const roomPayload = {
+          // TODO: more data
           id: room.UserName,
           avatar: room.smallHeadImgUrl,
           external: false,
@@ -1256,9 +1256,11 @@ export class PuppetWcferry extends PUPPET.Puppet {
   // #endregion
 }
 
-declare module 'wechaty-puppet' {
-  export interface UrlLinkPayload {
+declare module 'wechaty-puppet/payloads' {
+  export interface UrlLink {
+    /** 左下显示的名字 */
     name?: string
+    /** 公众号 id 可以显示对应的头像（gh_ 开头的） */
     account?: string
   }
 }
