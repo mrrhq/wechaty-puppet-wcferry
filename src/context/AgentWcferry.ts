@@ -105,8 +105,8 @@ export class AgentWcferry extends EventEmitter<FerryAgentHooks> implements Pick<
     return this.wcf.sendRichText(desc, receiver)
   }
 
-  forwardMsg(msgid: string, receiver: string) {
-    return this.wcf.forwardMsg(msgid, receiver)
+  forwardMsg(messageId: string, receiver: string) {
+    return this.wcf.forwardMsg(messageId, receiver)
   }
 
   sendTxt(msg: string, receiver: string, aters?: string | string[]): number {
@@ -210,15 +210,25 @@ export class AgentWcferry extends EventEmitter<FerryAgentHooks> implements Pick<
         'ChatRoomInfo.ChatRoomName',
         'ChatRoom.ChatRoomName',
       )
-      .select(knex.ref('RoomData').withSchema('ChatRoom'))
+      .select(knex.ref('UserNameList').withSchema('ChatRoom'))
+      .select(knex.ref('DisplayNameList').withSchema('ChatRoom'))
       .where('ChatRoomInfo.ChatRoomName', userName)
 
     const [data] = this.dbSqlQuery<PromiseReturnType<typeof sql>>(db, sql)
-    const { members } = decodeRoomData(data.RoomData)
-    const memberIdList = members?.map((v: any) => v.wxID) as string[]
+    const memberIdList = data.UserNameList.split('^G')
+    const DisplayNameList = data.DisplayNameList.split('^G')
+    const displayNameMap: Record<string, string> = {}
+    memberIdList.forEach((memberId, index) => {
+      displayNameMap[memberId] = DisplayNameList[index]
+    })
     return {
       ...data,
+      /** 群成员 wxid 列表 */
       memberIdList,
+      /** 群成员昵称列表 */
+      DisplayNameList,
+      /** 群成员{wxid:昵称}对照表 */
+      displayNameMap,
     }
   }
 
@@ -230,10 +240,10 @@ export class AgentWcferry extends EventEmitter<FerryAgentHooks> implements Pick<
   // @ts-expect-error
   override getChatRoomMembers(userName: string) {
     const { db, knex } = useMicroMsgDbQueryBuilder()
-    const { memberIdList } = this.getChatRoomInfo(userName)
+    const { memberIdList, displayNameMap } = this.getChatRoomInfo(userName)
     const sql = knex
       .from('Contact')
-      .select('NickName', 'UserName')
+      .select('NickName', 'UserName', 'Remark')
       .whereIn(
         'UserName',
         memberIdList,
@@ -244,8 +254,14 @@ export class AgentWcferry extends EventEmitter<FerryAgentHooks> implements Pick<
         'ContactHeadImgUrl.usrName',
       )
       .select(knex.ref('smallHeadImgUrl').withSchema('ContactHeadImgUrl'))
+    const results = this.dbSqlQuery<PromiseReturnType<typeof sql>>(db, sql)
 
-    return this.dbSqlQuery<PromiseReturnType<typeof sql>>(db, sql)
+    const enrichedResults = results.map(result => ({
+      ...result,
+      /** 群昵称 */
+      DisplayName: displayNameMap[result.UserName] || '',
+    }))
+    return enrichedResults
   }
 
   /**

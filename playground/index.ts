@@ -18,4 +18,17 @@ bot.on('message', (msg) => {
   }
 })
 
+bot.on('room-join', (room, inviteeList, inviter, date) => {
+  log.info('join')
+  log.info(JSON.stringify({ room, inviteeList, inviter, date }))
+})
+bot.on('room-leave', (room, leverList, remover, date) => {
+  log.info('leave')
+  log.info(JSON.stringify({ room, leverList, remover, date }))
+})
+bot.on('room-topic', (room, newTopic, oldTopic, changer, date) => {
+  log.info('topic')
+  log.info(JSON.stringify({ room, newTopic, oldTopic, changer, date }))
+})
+
 bot.start()

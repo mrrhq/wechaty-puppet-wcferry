@@ -25,6 +25,8 @@ export interface ChatRoomInfo {
 
 export interface ChatRoom {
   ChatRoomName: string
+  DisplayNameList: string
+  UserNameList: string
   RoomData: Buffer
 }
 

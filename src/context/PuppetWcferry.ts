@@ -1132,10 +1132,10 @@ export class PuppetWcferry extends PUPPET.Puppet {
           const contact = chatroomMembers.find(v => v.UserName === userName)
           return {
             id: contact?.UserName,
-            // roomAlias: contact.alias,
+            roomAlias: contact?.DisplayName,
             avatar: contact?.smallHeadImgUrl,
-            name: contact?.NickName,
-          }
+            name: contact?.Remark || contact?.NickName,
+          } as RoomMember
         })
         const members = await Promise.all(membersPromise)
         const roomPayload = {
