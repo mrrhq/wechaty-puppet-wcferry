@@ -398,7 +398,8 @@ export class AgentWcferry extends EventEmitter<FerryAgentHooks> implements Pick<
     const data = this.dbSqlQuery<PromiseReturnType<typeof sql>>(db, sql)
     return data.map((msg) => {
       const BytesExtra = decodeBytesExtra(msg.BytesExtra)
-      const wxid = getWxidFromBytesExtra(BytesExtra)
+      // fallback to self wxid
+      const wxid = getWxidFromBytesExtra(BytesExtra) || this.wcf.getSelfWxid()
       return {
         ...msg,
         talkerWxid: wxid,
