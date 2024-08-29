@@ -1016,14 +1016,14 @@ export class PuppetWcferry extends PUPPET.Puppet {
       room.topic = roomInfo.NickName
       room.avatar = roomInfo.smallHeadImgUrl
       const members = this.agent.getChatRoomMembers(room.id)
-      room.memberIdList = members.map(member => member.UserName)
-      room.members = members.map((member) => {
+      room.memberIdList = members?.map(member => member.UserName) ?? []
+      room.members = members?.map((member) => {
         return {
           id: member.UserName,
           name: member.NickName,
           avatar: member.smallHeadImgUrl,
         } as RoomMember
-      })
+      }) ?? []
 
       await this.roomStorage.setItem(room.id, room)
     }
@@ -1146,7 +1146,7 @@ export class PuppetWcferry extends PUPPET.Puppet {
           room.UserName,
         )
         const membersPromise = room.memberIdList.map(async (userName) => {
-          const contact = chatroomMembers.find(v => v.UserName === userName)
+          const contact = chatroomMembers?.find(v => v.UserName === userName)
           return {
             id: contact?.UserName,
             roomAlias: contact?.DisplayName,

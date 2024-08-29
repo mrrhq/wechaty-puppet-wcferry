@@ -244,7 +244,10 @@ export class AgentWcferry extends EventEmitter<FerryAgentHooks> implements Pick<
   // @ts-expect-error
   override getChatRoomMembers(userName: string) {
     const { db, knex } = useMicroMsgDbQueryBuilder()
-    const { memberIdList, displayNameMap } = this.getChatRoomInfo(userName)
+    const roomInfo = this.getChatRoomInfo(userName)
+    if (!roomInfo)
+      return
+    const { memberIdList, displayNameMap } = roomInfo
     const sql = knex
       .from('Contact')
       .select('NickName', 'UserName', 'Remark')
