@@ -1,7 +1,7 @@
 {
   "name": "wechaty-puppet-wcferry",
   "type": "module",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "packageManager": "pnpm@9.8.0",
   "description": "Wechaty Puppet for WechatFerry",
   "author": "mrrhq <sanhua@himrr.com>",
