@@ -1010,6 +1010,8 @@ export class PuppetWcferry extends PUPPET.Puppet {
       return
     try {
       const roomInfo = this.agent.getChatRoomInfo(room.id)
+      if (!roomInfo)
+        return
       room.announce = roomInfo.Announcement
       room.topic = roomInfo.NickName
       room.avatar = roomInfo.smallHeadImgUrl

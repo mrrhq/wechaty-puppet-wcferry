@@ -217,6 +217,8 @@ export class AgentWcferry extends EventEmitter<FerryAgentHooks> implements Pick<
       .where('ChatRoomInfo.ChatRoomName', userName)
 
     const [data] = this.dbSqlQuery<PromiseReturnType<typeof sql>>(db, sql)
+    if (!data)
+      return
     const memberIdList = data.UserNameList.split('^G')
     const DisplayNameList = data.DisplayNameList.split('^G')
     const displayNameMap: Record<string, string> = {}
@@ -282,6 +284,8 @@ export class AgentWcferry extends EventEmitter<FerryAgentHooks> implements Pick<
       .select(knex.ref('smallHeadImgUrl').withSchema('ContactHeadImgUrl'))
       .where('UserName', userName)
     const [data] = this.dbSqlQuery<PromiseReturnType<typeof sql>>(db, sql)
+    if (!data)
+      return
     return {
       ...data,
       tags: data.LabelIDList?.split(',').filter(v => v) ?? [],
@@ -354,6 +358,8 @@ export class AgentWcferry extends EventEmitter<FerryAgentHooks> implements Pick<
       .where('UsrName', userName)
 
     const [data] = this.dbSqlQuery<{ TalkerId: string }[]>(db, sql)
+    if (!data)
+      return
     return data.TalkerId
   }
 
